@@ -34,7 +34,7 @@ BROWSER_UA = (
     "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 )
 
-GLOBAL_CONCURRENCY = 64          # simultaneous requests across all hosts
+GLOBAL_CONCURRENCY = 32          # simultaneous requests across all hosts
 PER_HOST_INTERVAL = 1.0          # seconds between requests to the same host
 REQUEST_TIMEOUT = 10             # seconds
 MAX_RETRIES = 2                  # for 429/5xx responses

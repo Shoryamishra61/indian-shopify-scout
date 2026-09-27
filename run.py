@@ -131,8 +131,11 @@ def main() -> None:
     args = parser.parse_args()
 
     config.ensure_dirs()
-    # keep the OS-default proactor loop on Windows: the selector loop caps at
-    # 512 sockets which breaks high-concurrency crawls
+    # Windows: aiodns (c-ares) requires a SelectorEventLoop - under the
+    # default proactor loop DNS resolution deadlocks intermittently. The
+    # selector loop's 512-socket cap is not a constraint at this concurrency.
+    if sys.platform.startswith("win"):
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     runner = {
         "discover": cmd_discover, "verify": cmd_verify, "enrich": cmd_enrich,

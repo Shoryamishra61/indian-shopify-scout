@@ -16,6 +16,9 @@ import json
 import random
 import sys
 import urllib.request
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import config
 from scout.states import normalize_province

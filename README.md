@@ -3,7 +3,7 @@
 A pipeline that finds **Shopify stores operated from India** and extracts structured
 data about each one: domain, contacts, socials, category, tagline, logo and state.
 
-**Result: `output/indian_shopify_stores.csv`** — <!--TOTAL--> verified Indian Shopify
+**Result: `output/indian_shopify_stores.csv`** — 2,440 verified Indian Shopify
 stores, one row per store, built entirely from free public sources with no paid APIs.
 
 ---
@@ -28,13 +28,40 @@ stores, one row per store, built entirely from free public sources with no paid 
 
 ## Results
 
-<!--RESULTS_TABLE-->
+| Source | Candidates contributed | Verified stores |
+|---|---:|---:|
+| Common Crawl `.in` sweep | 131,108 | 2,299 |
+| Common Crawl `*.myshopify.com` sweep | 8,098 | 43 |
+| Curated seed list | 111 | 70 |
+| Listicle scrape | 82 | 8 |
+| Outbound expansion | 200 | 31 |
+| Search-engine queries | 0 | 0 |
 
-<!--FUNNEL-->
+| Stage | Count |
+| --- | ---: |
+| Candidate domains discovered | 139,599 |
+| Assessed (fetched and decided) | 75,696 |
+| Reachable storefronts | 129,785 |
+| Confirmed Shopify | 8,148 |
+| Confirmed Shopify **and** Indian | 2,451 |
+| After deduplication on `myshopify_domain`, exported | **2,440** |
+
+Rejections were dominated by `not_shopify`; every reason and count is in
+`output/report.json` → `rejection_reasons`.
 
 ### Field completeness
 
-<!--COMPLETENESS-->
+| Field | Present | Missing | % |
+|---|---:|---:|---:|
+| Domain URL | 2,440 | 0 | 100.0% |
+| Contacts (email or phone) | 2,415 | 25 | 99.0% |
+| — emails | 2,251 | 189 | 92.3% |
+| — phones | 2,412 | 28 | 98.9% |
+| Socials | 2,058 | 382 | 84.3% |
+| Category | 2,383 | 57 | 97.7% |
+| Tagline | 2,346 | 94 | 96.1% |
+| Logo | 2,233 | 207 | 91.5% |
+| State | 2,431 | 9 | 99.6% |
 
 Why fields go missing, not just how often:
 
@@ -55,10 +82,10 @@ Why fields go missing, not just how often:
 
 - **State distribution** mirrors where Indian D2C actually clusters
   (Maharashtra / Delhi / Karnataka / Gujarat … top), which is hard evidence the
-  state field is not noise: <!--STATE_DIST-->
-- A random sample of exported rows was re-verified live against `/meta.json`
-  during development; every sampled row returned `country: IN` with a matching
-  province (spot-check log in `output/report.json` → `india_methods`).
+  state field is not noise: Maharashtra 484 · Delhi 380 · Karnataka 224 · Uttar Pradesh 222 · Gujarat 213 · Haryana 190 · Tamil Nadu 167 · Rajasthan 134
+- A random sample of **15 exported rows was re-checked live against
+  `/meta.json` after export: 15/15 confirmed** (`python spot_check.py 15`
+  reproduces this against the checked-in CSV).
 - Foreign-owned `.in` domains are systematically rejected — see
   *"Handling false positives"* below.
 
@@ -85,11 +112,11 @@ they only decide what is worth one HTTP request. Verification decides everything
 
 | Source | What it is | Volume |
 |---|---|---|
-| **Common Crawl index sweep** (primary) | direct read of `cluster.idx` blocks for the SURT prefixes `in,` (every `.in` host) and `com,myshopify,` (every `*.myshopify.com` host) in the newest crawl(s); hosts kept only when some crawled URL has a Shopify-shaped path (`/cdn/shop/`, `/collections/`, `/products.json`, ...) | <!--SRC_CC--> |
-| **Curated seed list** | ~80 well-known Indian consumer brands (`seeds/indian_brands.txt`) | <!--SRC_SEEDS--> |
-| **Listicle scrape** | outbound links scraped from public "top Indian Shopify stores" articles | <!--SRC_LISTICLES--> |
-| **DuckDuckGo queries** | throttled (≥8s apart, ≤45 queries) searches pairing India terms with `site:myshopify.com` / "powered by shopify" | <!--SRC_SEARCH--> |
-| **Outbound expansion** | links harvested from *already-cached* homepages of verified stores (zero extra requests), then re-verified; repeated while the pool keeps growing | <!--SRC_EXPANSION--> |
+| **Common Crawl index sweep** (primary) | direct read of `cluster.idx` blocks for the SURT prefixes `in,` (every `.in` host) and `com,myshopify,` (every `*.myshopify.com` host) in the newest crawl(s); hosts kept only when some crawled URL has a Shopify-shaped path (`/cdn/shop/`, `/collections/`, `/products.json`, ...) | 139,206 |
+| **Curated seed list** | ~80 well-known Indian consumer brands (`seeds/indian_brands.txt`) | 111 |
+| **Listicle scrape** | outbound links scraped from public "top Indian Shopify stores" articles | 82 |
+| **DuckDuckGo queries** | throttled (≥8s apart, ≤45 queries) searches pairing India terms with `site:myshopify.com` / "powered by shopify" | 0 (implemented, but the engine throttled scripted queries to zero this run) |
+| **Outbound expansion** | links harvested from *already-cached* homepages of verified stores (zero extra requests), then re-verified; repeated while the pool keeps growing | 200 |
 
 #### Why the Common Crawl index is read directly
 
@@ -102,11 +129,24 @@ robust route:
   (`in,example` = `example.in` reversed) to byte ranges of gzipped index blocks.
 - Every `.in` host therefore lives in the contiguous run of lines starting
   `in,`; the whole `.in` TLD spans a few thousand blocks.
-- The pipeline downloads `cluster.idx` once, collects the block descriptors,
-  fetches exactly those byte ranges (12 in parallel, with backoff), gunzips
-  each block and filters URLs locally for Shopify-shaped paths.
+- The pipeline downloads `cluster.idx` once (cached on disk), collects the
+  block descriptors, fetches exactly those byte ranges and gunzips each block,
+  filtering URLs locally for Shopify-shaped paths.
+- **Throttle-aware by design**: data.commoncrawl.org rate-limits bursts
+  (observed: sustained ~8-10 requests/s triggers a wall of 403s). The sweep
+  therefore runs in waves - low concurrency (~2 requests/s), a cooldown
+  between waves, a circuit-breaker on consecutive 403s, and a done-ledger
+  that makes every block incremental, so an interrupted sweep resumes exactly
+  where it stopped. The full 5,777-block sweep completed with **zero failed
+  blocks**.
 - Only *index metadata* is read at discovery time — no storefront is contacted
   during discovery.
+
+> Digression for the curious: the CDX query API cannot express TLD-level
+> patterns (`*.in/...` silently returns unfiltered pages), so reading
+> `cluster.idx` directly is not just faster — it is the only correct route.
+> The index records also turned out to be space-separated CDXJ, not
+> tab-separated; a tab-split parses zero lines and fails silently.
 
 ## How a store is confirmed as Shopify
 
@@ -202,9 +242,10 @@ python run.py export                # writes output/ CSV + JSON + report.json
 
 Stages are idempotent and resumable — outputs are append-only JSONL
 (`data/candidates.jsonl`, `data/stores.jsonl`, `data/rejected.jsonl`) plus the
-response cache; interrupting and re-running any stage is safe. A full
-end-to-end run on a fresh machine took **<!--RUNTIME-->** and produced the
-checked-in result file. Politeness settings (`PER_HOST_INTERVAL`,
+response cache; interrupting and re-running any stage is safe. The checked-in
+result file came from a run whose fetch stages took **~6 hours end-to-end
+(development, debugging and unattended crawling combined)**; a re-run with the
+pool already discovered would be substantially faster. Politeness settings (`PER_HOST_INTERVAL`,
 `GLOBAL_CONCURRENCY`) live in `config.py`.
 
 ## Known limitations

@@ -142,6 +142,7 @@ class Fetcher:
         attempt = 0
         while True:
             await self.limiter.wait(host)
+            dns_fail = False
             async with self.global_sem:
                 try:
                     async with self.session.get(
@@ -157,7 +158,12 @@ class Fetcher:
                             body = await resp.text(errors="replace")
                         else:
                             body = ""  # binaries are not cached
+                except aiohttp.ClientConnectorDNSError:
+                    # deterministic failure: the domain does not resolve
+                    status, body, final_url, dns_fail = 0, "", url, True
                 except (aiohttp.ClientError, asyncio.TimeoutError, OSError) as exc:
+                    # resets / timeouts are often transient (local network
+                    # throttling) - they get one retry below
                     status, body, final_url = 0, "", url
                     log.debug("network error %s: %s", url, exc)
 
@@ -171,11 +177,11 @@ class Fetcher:
                     return reply
                 status, body, final_url = 403, "", url
 
-            if status in (429,) or 500 <= status < 600:
-                if attempt < config.MAX_RETRIES:
-                    attempt += 1
-                    await asyncio.sleep(config.RETRY_BACKOFF * attempt)
-                    continue
+            retryable = status == 429 or 500 <= status < 600 or (status == 0 and not dns_fail)
+            if retryable and attempt < config.MAX_RETRIES:
+                attempt += 1
+                await asyncio.sleep(config.RETRY_BACKOFF * attempt)
+                continue
             break
 
         reply = Reply(url, status, body, final_url)

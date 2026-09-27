@@ -348,6 +348,7 @@ async def enrich_store(store, fetcher, rec: dict) -> dict:
     phones: list[str] = []
     all_pages_text = ""
     for _, body in pages:
+        body = body[:600000]  # bound regex work on huge generated pages
         all_pages_text += body + "\n"
         for e in extract_emails(body):
             if e not in emails:
@@ -361,7 +362,7 @@ async def enrich_store(store, fetcher, rec: dict) -> dict:
     # ---- socials ------------------------------------------------------------
     socials: dict[str, str] = {}
     for _, body in pages:
-        for platform, url in extract_socials(body).items():
+        for platform, url in extract_socials(body[:600000]).items():
             socials.setdefault(platform, url)
     rec["socials"] = socials
 

@@ -44,7 +44,9 @@ robots_cache = RobotsCache()
 # ---- Shopify HTML marker families -----------------------------------------
 MARKER_CDN = re.compile(r"(cdn\.shopify\.com|cdn\.shopifycdn\.net|shopify\.com/shopifycloud)", re.I)
 MARKER_JS = re.compile(r"\bShopify\s*\.\s*(shop|currency|locale|theme)\s*=", re.I)
-MARKER_MYSHP_LINK = re.compile(r"[a-z0-9][a-z0-9-]*\.myshopify\.com", re.I)
+# bounded quantifier: an unbounded [a-z0-9-]* causes O(n^2) scans on
+# minified-JS homepages and can freeze the event loop for hours
+MARKER_MYSHP_LINK = re.compile(r"[a-z0-9][a-z0-9-]{0,80}\.myshopify\.com", re.I)
 MARKER_META = re.compile(r'<meta[^>]+(?:name|property)=["\'](?:shopify|tiq|shopyflow)', re.I)
 MARKER_HEADER = None  # x-shopid handled via headers when available
 
@@ -116,6 +118,7 @@ async def fetch_products_json(fetcher, host: str, limit: int = 1) -> list | None
 
 
 def shopify_markers_in_html(html: str) -> set[str]:
+    html = html[:300000]  # Shopify markers live in the first KBs; bound the scan
     fam = set()
     if MARKER_CDN.search(html):
         fam.add("cdn")
