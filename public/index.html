@@ -3,205 +3,761 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Indian Shopify Stores — Discovery Dataset</title>
+<title>Indian Shopify Stores — 2,440 verified stores</title>
+<meta name="description" content="Searchable dataset of 2,440 verified Shopify stores operated from India: contacts, socials, category, tagline, logo and state.">
 <style>
+/* ---------- semantic tokens ---------- */
+:root {
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --surface-muted: #f0f0ee;
+  --ink: #1a1d21;
+  --ink-muted: #5c6470;
+  --ink-faint: #9aa1ab;
+  --border: #e2e2de;
+  --border-strong: #cfcfc9;
+  --accent: #0f6e5c;
+  --accent-ink: #ffffff;
+  --accent-muted: #e3efec;
+  --focus: #0f6e5c;
+  --radius-s: 6px;
+  --radius-m: 8px;
+  --radius-l: 12px;
+  --shadow-drawer: 0 8px 32px rgba(20, 24, 28, .18);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0d1117; --panel: #161b22; --border: #2d333b;
-    --text: #e6edf3; --muted: #8b949e; --accent: #6ee7a0; --accent2: #79b8ff;
+    --bg: #131518; --surface: #1c1f23; --surface-muted: #24282d;
+    --ink: #e8eaed; --ink-muted: #9aa1ab; --ink-faint: #6b7280;
+    --border: #2c3136; --border-strong: #3d434a;
+    --accent: #3ecfaf; --accent-muted: #1d2f2b;
   }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-         font: 15px/1.5 -apple-system, "Segoe UI", Roboto, sans-serif; }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 20px 80px; }
-  header h1 { font-size: 22px; margin: 0 0 4px; }
-  header p { color: var(--muted); margin: 0 0 20px; font-size: 14px; }
-  header a { color: var(--accent2); text-decoration: none; }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-           gap: 12px; margin-bottom: 20px; }
-  .card { background: var(--panel); border: 1px solid var(--border);
-          border-radius: 10px; padding: 14px 16px; }
-  .card b { display: block; font-size: 22px; color: var(--accent); }
-  .card span { color: var(--muted); font-size: 12.5px; }
-  .bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
-  input, select { background: var(--panel); color: var(--text);
-                  border: 1px solid var(--border); border-radius: 8px;
-                  padding: 9px 12px; font-size: 14px; outline: none; }
-  input:focus, select:focus { border-color: var(--accent2); }
-  input[type=search] { flex: 1 1 260px; }
-  table { width: 100%; border-collapse: collapse; background: var(--panel);
-          border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-  th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
-       color: var(--muted); padding: 10px 12px; border-bottom: 1px solid var(--border); }
-  td { padding: 10px 12px; border-bottom: 1px solid var(--border);
-       vertical-align: top; font-size: 13.5px; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #1b2129; }
-  .store { display: flex; gap: 10px; align-items: flex-start; }
-  .logo { width: 34px; height: 34px; border-radius: 7px; object-fit: contain;
-          background: #fff; flex: none; }
-  .logo:is([src=""], [src$=","]) { visibility: hidden; }
-  .domain { color: var(--accent2); text-decoration: none; font-weight: 600; }
-  .name { color: var(--muted); font-size: 12.5px; }
-  .tag { color: var(--muted); font-size: 12.5px; margin-top: 3px;
-         max-width: 420px; display: -webkit-box; -webkit-line-clamp: 2;
-         -webkit-box-orient: vertical; overflow: hidden; }
-  .pill { display: inline-block; background: #21262d; border: 1px solid var(--border);
-          border-radius: 20px; padding: 1px 9px; font-size: 12px; color: var(--text); }
-  .contacts { font-size: 12.5px; word-break: break-all; max-width: 220px; }
-  .socials a { color: var(--muted); margin-right: 6px; text-decoration: none;
-               font-size: 12.5px; }
-  .socials a:hover { color: var(--accent2); }
-  .pager { display: flex; gap: 8px; align-items: center; justify-content: center;
-           margin-top: 16px; color: var(--muted); }
-  button { background: var(--panel); color: var(--text); border: 1px solid var(--border);
-           border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 13.5px; }
-  button:disabled { opacity: .4; cursor: default; }
-  button:not(:disabled):hover { border-color: var(--accent2); }
-  .empty { text-align: center; color: var(--muted); padding: 48px 0; }
-  .foot { margin-top: 28px; color: var(--muted); font-size: 13px; }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 var(--font);
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+button { font: inherit; color: inherit; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+
+.wrap { max-width: 1240px; margin: 0 auto; padding: 20px clamp(14px, 3vw, 28px) 72px; }
+
+/* ---------- header ---------- */
+header.top {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+  justify-content: space-between; padding: 8px 0 18px;
+  border-bottom: 1px solid var(--border); margin-bottom: 18px;
+}
+h1 { font-size: 19px; line-height: 1.25; margin: 0; letter-spacing: -0.01em; }
+.subtitle { color: var(--ink-muted); font-size: 13px; margin: 4px 0 0; max-width: 720px; }
+.subtitle a { color: inherit; }
+.top-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--surface); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-m); padding: 8px 14px; font-size: 13.5px;
+  cursor: pointer; text-decoration: none; color: var(--ink);
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { opacity: .92; }
+
+/* ---------- query bar ---------- */
+.querybar { margin: 0 0 14px; }
+.querybar label { display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; }
+.query-row { display: flex; gap: 8px; }
+.query-row input {
+  flex: 1; min-width: 0; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border-strong); border-radius: var(--radius-m);
+  padding: 11px 14px; font-size: 14.5px;
+}
+.query-row input::placeholder { color: var(--ink-faint); }
+.hint { color: var(--ink-faint); font-size: 12px; margin-top: 6px; }
+.hint button {
+  background: none; border: none; padding: 0; color: var(--ink-muted);
+  cursor: pointer; text-decoration: underline; font-size: 12px;
+}
+.interp {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  background: var(--accent-muted); border: 1px solid var(--border);
+  border-radius: var(--radius-m); padding: 8px 10px; margin-top: 10px;
+  font-size: 13px;
+}
+.interp .lbl { color: var(--ink-muted); font-size: 12px; margin-right: 2px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--surface); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-s); padding: 2px 9px; font-size: 12.5px;
+}
+.chip b { font-weight: 600; }
+.interp .clear {
+  margin-left: auto; background: none; border: none; cursor: pointer;
+  color: var(--accent); font-size: 12.5px; text-decoration: underline; padding: 2px;
+}
+
+/* ---------- stat cards ---------- */
+.cards {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px; margin-bottom: 18px;
+}
+.card { background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--radius-m); padding: 12px 14px; }
+.card b { display: block; font-size: 21px; font-weight: 650; letter-spacing: -0.01em; }
+.card span { color: var(--ink-muted); font-size: 12px; }
+
+/* ---------- charts ---------- */
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+@media (max-width: 860px) { .charts { grid-template-columns: 1fr; } }
+.panel { background: var(--surface); border: 1px solid var(--border);
+         border-radius: var(--radius-l); padding: 14px 16px; }
+.panel h2 { font-size: 13px; font-weight: 600; margin: 0 0 10px; color: var(--ink-muted);
+            text-transform: uppercase; letter-spacing: .05em; }
+.bar-row { display: grid; grid-template-columns: 128px 1fr 44px; gap: 8px;
+           align-items: center; width: 100%; background: none; border: none;
+           padding: 3px 0; cursor: pointer; text-align: left; border-radius: 4px; }
+.bar-row:hover .bar-track { background: var(--accent-muted); }
+.bar-row:hover { color: var(--accent); }
+.bar-label { font-size: 12.5px; color: var(--ink); white-space: nowrap;
+             overflow: hidden; text-overflow: ellipsis; }
+.bar-track { display: block; background: var(--surface-muted); border-radius: 3px;
+             height: 14px; overflow: hidden; }
+.bar-fill { display: block; height: 100%; background: var(--accent);
+            border-radius: 3px; min-width: 2px; }
+.bar-count { font-size: 12px; color: var(--ink-muted); text-align: right;
+             font-variant-numeric: tabular-nums; }
+
+/* ---------- toolbar ---------- */
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+           margin-bottom: 12px; }
+.toolbar input[type=search] {
+  flex: 1 1 220px; min-width: 160px; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border-strong); border-radius: var(--radius-m);
+  padding: 8px 12px; font-size: 13.5px;
+}
+.toolbar select {
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border-strong); border-radius: var(--radius-m);
+  padding: 8px 10px; font-size: 13.5px; max-width: 210px;
+}
+.toggle { display: inline-flex; align-items: center; gap: 5px;
+          background: var(--surface); border: 1px solid var(--border-strong);
+          border-radius: var(--radius-m); padding: 8px 12px; font-size: 13px;
+          cursor: pointer; user-select: none; }
+.toggle[aria-pressed="true"] { background: var(--accent); border-color: var(--accent);
+                               color: var(--accent-ink); }
+.count-line { color: var(--ink-muted); font-size: 13px; margin: 0 0 10px;
+              display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.count-line b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+/* ---------- table ---------- */
+.tablebox { background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius-l); overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 880px; }
+thead th {
+  text-align: left; font-size: 11.5px; font-weight: 600; color: var(--ink-muted);
+  text-transform: uppercase; letter-spacing: .05em;
+  padding: 10px 12px; border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border);
+           vertical-align: top; font-size: 13px; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr.rowbtn { cursor: pointer; }
+tbody tr.rowbtn:hover td { background: var(--surface-muted); }
+td.idx { color: var(--ink-faint); font-family: var(--mono); font-size: 12px;
+         font-variant-numeric: tabular-nums; white-space: nowrap; }
+.store-cell { display: flex; gap: 10px; align-items: flex-start; min-width: 260px; }
+.avatar {
+  width: 36px; height: 36px; border-radius: var(--radius-m); flex: none;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent-muted); color: var(--accent);
+  font-weight: 650; font-size: 15px; overflow: hidden;
+}
+.avatar img { width: 100%; height: 100%; object-fit: contain; }
+.store-name { font-weight: 600; }
+.store-domain { font-family: var(--mono); font-size: 11.5px; color: var(--ink-muted); }
+.store-domain a { color: inherit; text-decoration: none; }
+.store-domain a:hover { color: var(--accent); text-decoration: underline; }
+.tagline {
+  color: var(--ink-muted); font-size: 12px; margin-top: 3px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; max-width: 380px;
+}
+.pill { display: inline-block; background: var(--surface-muted);
+        border: 1px solid var(--border); border-radius: var(--radius-s);
+        padding: 1px 8px; font-size: 12px; white-space: nowrap; }
+.pill.group { color: var(--ink-muted); }
+.contact-chips { display: flex; flex-direction: column; gap: 3px; max-width: 230px; }
+.chip-line {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--mono); font-size: 11.5px; color: var(--ink);
+  text-decoration: none; background: var(--surface-muted);
+  border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+a.chip-line:hover { border-color: var(--accent); color: var(--accent); }
+.muted { color: var(--ink-faint); }
+.social-links { display: flex; flex-wrap: wrap; gap: 4px; max-width: 130px; }
+.social-links a {
+  display: inline-block; background: var(--surface-muted);
+  border: 1px solid var(--border); border-radius: 4px;
+  padding: 2px 7px; font-size: 11.5px; color: var(--ink-muted);
+  text-decoration: none; text-transform: uppercase; letter-spacing: .03em;
+}
+.social-links a:hover { border-color: var(--accent); color: var(--accent); }
+.dot-meter { display: inline-flex; gap: 2.5px; }
+.dot-meter i { width: 7px; height: 7px; border-radius: 50%;
+               background: var(--surface-muted); border: 1px solid var(--border-strong); }
+.dot-meter i.on { background: var(--accent); border-color: var(--accent); }
+
+/* ---------- pager ---------- */
+.pager { display: flex; gap: 10px; align-items: center; justify-content: center;
+         margin-top: 16px; color: var(--ink-muted); font-size: 13px;
+         font-variant-numeric: tabular-nums; }
+.pager button { background: var(--surface); border: 1px solid var(--border-strong);
+                border-radius: var(--radius-m); padding: 7px 14px; cursor: pointer;
+                font-size: 13px; }
+.pager button:disabled { opacity: .4; cursor: default; }
+.pager button:not(:disabled):hover { border-color: var(--accent); }
+
+/* ---------- drawer ---------- */
+.backdrop {
+  position: fixed; inset: 0; background: rgba(15, 18, 22, .45);
+  opacity: 0; pointer-events: none; transition: opacity .15s; z-index: 40;
+}
+.backdrop.open { opacity: 1; pointer-events: auto; }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100vw);
+  background: var(--surface); border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-drawer); z-index: 50;
+  transform: translateX(102%); transition: transform .18s ease-out;
+  overflow-y: auto; padding: 22px 24px 40px;
+}
+.drawer.open { transform: translateX(0); }
+.drawer-head { display: flex; justify-content: space-between; align-items: flex-start;
+               gap: 12px; margin-bottom: 14px; }
+.drawer-close { background: none; border: 1px solid var(--border-strong);
+                border-radius: var(--radius-s); padding: 4px 10px; cursor: pointer;
+                font-size: 13px; }
+.drawer-close:hover { border-color: var(--accent); }
+.drawer .brand { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; }
+.drawer .brand .avatar { width: 56px; height: 56px; font-size: 22px;
+                         border: 1px solid var(--border); }
+.drawer .brand h2 { margin: 0; font-size: 17px; line-height: 1.3; }
+.drawer .brand .store-domain { font-size: 12px; }
+.dsec { margin-top: 18px; }
+.dsec h3 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em;
+           color: var(--ink-muted); margin: 0 0 8px; }
+.kv { display: grid; grid-template-columns: 110px 1fr; gap: 4px 10px; font-size: 13px; }
+.kv dt { color: var(--ink-muted); }
+.kv dd { margin: 0; word-break: break-word; }
+.tagline-full { font-size: 13.5px; color: var(--ink); background: var(--surface-muted);
+                border-left: 3px solid var(--accent); padding: 8px 12px;
+                border-radius: 0 var(--radius-m) var(--radius-m) 0; }
+.prov { color: var(--ink-faint); font-size: 11.5px; font-family: var(--mono);
+        word-break: break-all; }
+
+/* ---------- states ---------- */
+.state-msg { text-align: center; padding: 56px 16px; color: var(--ink-muted); }
+.state-msg b { display: block; color: var(--ink); font-size: 15px; margin-bottom: 4px; }
+.skeleton td { color: transparent; }
+.skeleton .sk {
+  display: block; height: 12px; border-radius: 4px;
+  background: linear-gradient(90deg, var(--surface-muted), var(--border), var(--surface-muted));
+  background-size: 200% 100%; animation: shimmer 1.2s linear infinite;
+}
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+footer.foot { margin-top: 26px; color: var(--ink-faint); font-size: 12.5px;
+              border-top: 1px solid var(--border); padding-top: 14px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>Indian Shopify Store Discovery</h1>
-    <p>2,440 verified Shopify stores operated from India — discovered via the
-       Common Crawl index, confirmed through Shopify's public <code>/meta.json</code>.
-       Pipeline and methodology:
-       <a href="https://github.com/Shoryamishra61/indian-shopify-scout">github.com/Shoryamishra61/indian-shopify-scout</a></p>
+
+  <header class="top">
+    <div>
+      <h1>Indian Shopify Stores — verified dataset</h1>
+      <p class="subtitle">
+        2,440 Shopify stores confirmed as operated from India via the merchant's own
+        Shopify configuration (<code>/meta.json</code>, country IN). Discovered by sweeping
+        the public Common Crawl index; crawled respectfully at ≤1 request/second per host.
+        Method: <a href="https://github.com/Shoryamishra61/indian-shopify-scout">github.com/Shoryamishra61/indian-shopify-scout</a>
+      </p>
+    </div>
+    <div class="top-actions">
+      <button class="btn" id="exportBtn" title="Download the current filtered view as CSV">Download CSV</button>
+    </div>
   </header>
 
-  <div class="cards" id="cards"></div>
-
-  <div class="bar">
-    <input type="search" id="q" placeholder="Search domain, name, tagline, email…">
-    <select id="state"><option value="">All states</option></select>
-    <select id="category"><option value="">All categories</option></select>
-    <select id="has">
-      <option value="">Any fields</option>
-      <option value="email">Has email</option>
-      <option value="phone">Has phone</option>
-      <option value="social">Has Instagram</option>
-      <option value="logo">Has logo</option>
-    </select>
+  <div class="querybar">
+    <label for="nlq">Ask the dataset</label>
+    <div class="query-row">
+      <input id="nlq" type="text" autocomplete="off"
+             placeholder='e.g. "skincare brands in Gujarat with phone" or "top 10 coffee stores with email"'>
+      <button class="btn primary" id="askBtn">Search</button>
+    </div>
+    <div id="interpBox"></div>
+    <p class="hint">The query is parsed into explicit filters — nothing is guessed.
+      Examples:
+      <button data-example="saree stores in Rajasthan with email">sarees in Rajasthan with email</button> ·
+      <button data-example="ayurveda with instagram">ayurveda with Instagram</button> ·
+      <button data-example="pet food in Maharashtra">pet food in Maharashtra</button> ·
+      <button data-example="top 20 jewellery with logo">top 20 jewellery with logo</button>
+    </p>
   </div>
 
-  <table>
-    <thead><tr>
-      <th style="width:36%">Store</th><th>Category</th><th>State</th>
-      <th>Contacts</th><th>Socials</th>
-    </tr></thead>
-    <tbody id="rows"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
-  </table>
+  <section class="cards" id="cards" aria-label="Dataset summary"></section>
+
+  <section class="charts" aria-label="Distributions">
+    <div class="panel">
+      <h2>Stores by state — click to filter</h2>
+      <div id="chartState"></div>
+    </div>
+    <div class="panel">
+      <h2>Stores by category group — click to filter</h2>
+      <div id="chartGroup"></div>
+    </div>
+  </section>
+
+  <div class="toolbar" role="search">
+    <input type="search" id="q" placeholder="Filter by name, domain, tagline, email…" aria-label="Filter stores">
+    <select id="fGroup" aria-label="Category group"><option value="">All category groups</option></select>
+    <select id="fState" aria-label="State"><option value="">All states</option></select>
+    <select id="fCategory" aria-label="Category"><option value="">All categories</option></select>
+    <select id="sort" aria-label="Sort order">
+      <option value="index">Sort: dataset order</option>
+      <option value="name">Sort: name</option>
+      <option value="state">Sort: state</option>
+      <option value="category">Sort: category</option>
+      <option value="contacts">Sort: most contacts</option>
+      <option value="completeness">Sort: most complete</option>
+    </select>
+  </div>
+  <div class="toolbar" role="group" aria-label="Field availability filters">
+    <button class="toggle" data-has="email" aria-pressed="false">Has email</button>
+    <button class="toggle" data-has="phone" aria-pressed="false">Has phone</button>
+    <button class="toggle" data-has="instagram" aria-pressed="false">Has Instagram</button>
+    <button class="toggle" data-has="logo" aria-pressed="false">Has logo</button>
+    <button class="toggle" data-has="whatsapp" aria-pressed="false">Has WhatsApp</button>
+  </div>
+
+  <p class="count-line">
+    <span id="resultCount"></span>
+    <span id="viewInfo" class="muted"></span>
+  </p>
+
+  <div class="tablebox">
+    <table>
+      <thead><tr>
+        <th style="width:56px">#</th>
+        <th style="width:32%">Store</th>
+        <th>Category</th>
+        <th>State</th>
+        <th style="width:19%">Contacts</th>
+        <th>Socials</th>
+        <th style="width:74px" title="Fields present out of 7">Fields</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
   <div class="pager">
-    <button id="prev">← Prev</button>
+    <button id="prev">← Previous</button>
     <span id="pinfo"></span>
     <button id="next">Next →</button>
   </div>
 
-  <p class="foot">Every row was verified against the merchant's own Shopify admin
-  data (country IN) and a random post-export sample re-confirmed live 15/15.
-  Data collected in compliance with robots.txt at ≤1 request/second per host.</p>
+  <footer class="foot">
+    Each row is one verified shop (deduplicated on Shopify's own
+    <code>myshopify_domain</code> key). "Fields" counts how many of the 7 required
+    fields are populated for that store. A random 15-row sample was re-verified live
+    after export: 15/15 confirmed. Logos are hotlinked from the stores' own CDNs;
+    a letter mark is shown when one cannot be loaded.
+  </footer>
 </div>
 
-<script>
-const $ = (id) => document.getElementById(id);
-let state = { q: "", state: "", category: "", has: "", page: 1 };
+<div class="backdrop" id="backdrop"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Store details">
+  <div class="drawer-head">
+    <span class="muted" style="font-size:12px" id="drawerIdx"></span>
+    <button class="drawer-close" id="drawerClose">Close (Esc)</button>
+  </div>
+  <div id="drawerBody"></div>
+</aside>
 
-async function api(path, params) {
-  const u = new URL(path, location.origin);
-  for (const [k, v] of Object.entries(params)) if (v) u.searchParams.set(k, v);
-  const r = await fetch(u);
-  if (!r.ok) throw new Error(await r.text());
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const state = {
+  q: "", group: "", state: "", category: "", has: new Set(),
+  sort: "index", page: 1, perPage: 50,
+  total: 0, pages: 1, stats: null, states: [], categories: [],
+  lastRows: [],
+};
+let lastFocused = null;
+
+const esc = (s) => {
+  const d = document.createElement("div");
+  d.textContent = s == null ? "" : String(s);
+  return d.innerHTML;
+};
+
+/* ---------- contacts formatting ---------- */
+function fmtPhone(p) {
+  const digits = p.replace(/[^\d+]/g, "");
+  const m = digits.match(/^\+91(\d{5})(\d{5})$/);
+  if (m) return `+91 ${m[1]} ${m[2]}`;
+  const m2 = digits.match(/^(\d{5})(\d{5})$/);
+  if (m2) return `+91 ${m2[1]} ${m2[2]}`;
+  return p;
+}
+function contactChips(r, max) {
+  const out = [];
+  const emails = (r.emails || []).slice(0, max);
+  for (const e of emails) {
+    out.push(`<a class="chip-line" href="mailto:${esc(e)}" title="Email ${esc(e)}">${esc(e)}</a>`);
+  }
+  const phones = (r.phones || []).slice(0, Math.max(0, max - emails.length));
+  for (const p of phones) {
+    out.push(`<a class="chip-line" href="tel:${esc(p.replace(/\s+/g, ""))}">${esc(fmtPhone(p))}</a>`);
+  }
+  return out.join("") || '<span class="muted">not published</span>';
+}
+const SOCIAL_LABEL = { instagram: "IG", facebook: "FB", twitter: "X",
+                       linkedin: "in", youtube: "YT", pinterest: "Pin",
+                       whatsapp: "WA", telegram: "TG" };
+function socialLinks(r, max = 99) {
+  const entries = Object.entries(r.socials || {});
+  if (!entries.length) return '<span class="muted">—</span>';
+  return entries.slice(0, max).map(([k, u]) =>
+    `<a href="${esc(u)}" target="_blank" rel="noopener">${SOCIAL_LABEL[k] || esc(k)}</a>`
+  ).join("");
+}
+function avatarHTML(r, big) {
+  const name = r.store_name || (r.domain_url || "").replace(/^https?:\/\/(www\.)?/, "");
+  const initial = esc((name[0] || "?").toUpperCase());
+  const cls = big ? ' class="avatar" style="width:56px;height:56px;font-size:22px"'
+                  : ' class="avatar"';
+  if (r.logo_url) {
+    return `<span${cls}><img loading="lazy" referrerpolicy="no-referrer"
+      src="${esc(r.logo_url)}" alt=""
+      onerror="this.parentElement.textContent='${initial}'">${initial ? "" : ""}</span>`;
+  }
+  return `<span${cls}>${initial}</span>`;
+}
+
+/* ---------- charts (clickable filters) ---------- */
+function renderBars(el, data, maxBars, onPick, active) {
+  const entries = Object.entries(data || {}).slice(0, maxBars);
+  const max = Math.max(1, ...entries.map(([, v]) => v));
+  el.innerHTML = entries.map(([k, v]) => `
+    <button class="bar-row" data-key="${esc(k)}" aria-pressed="${k === active}">
+      <span class="bar-label">${esc(k)}</span>
+      <span class="bar-track"><span class="bar-fill" style="width:${Math.max(2, Math.round(v / max * 100))}%"></span></span>
+      <span class="bar-count">${v.toLocaleString()}</span>
+    </button>`).join("");
+  el.querySelectorAll(".bar-row").forEach((b) =>
+    b.addEventListener("click", () => onPick(b.dataset.key)));
+}
+
+/* ---------- main table ---------- */
+function skeletonRows() {
+  let html = "";
+  for (let i = 0; i < 8; i++) {
+    html += `<tr class="skeleton"><td class="idx">00</td><td><span class="sk" style="width:80%"></span>
+      <span class="sk" style="width:55%;margin-top:5px"></span></td>
+      <td><span class="sk" style="width:60%"></span></td><td><span class="sk" style="width:50%"></span></td>
+      <td><span class="sk" style="width:70%"></span></td><td><span class="sk" style="width:40%"></span></td>
+      <td></td></tr>`;
+  }
+  $("rows").innerHTML = html;
+}
+
+function renderRows(rows) {
+  if (!rows.length) {
+    $("rows").innerHTML = `<tr><td colspan="7"><div class="state-msg">
+      <b>No stores match these filters</b>
+      Try widening the search, or
+      <button class="btn" id="clearAll" style="margin-top:10px">Clear all filters</button>
+    </div></td></tr>`;
+    const c = $("clearAll");
+    if (c) c.addEventListener("click", clearAllFilters);
+    return;
+  }
+  $("rows").innerHTML = rows.map((r) => `
+    <tr class="rowbtn" tabindex="0" data-url="${esc(r.domain_url)}" role="button"
+        aria-label="Details for ${esc(r.store_name || r.domain_url)}">
+      <td class="idx">${r.index}</td>
+      <td><div class="store-cell">
+        ${avatarHTML(r)}
+        <div>
+          <div class="store-name">${esc(r.store_name || "—")}</div>
+          <div class="store-domain"><a href="${esc(r.domain_url)}" target="_blank"
+              rel="noopener" onclick="event.stopPropagation()">${esc((r.domain_url || "").replace(/^https?:\/\//, ""))}</a></div>
+          <div class="tagline" title="${esc(r.tagline)}">${esc(r.tagline)}</div>
+        </div>
+      </div></td>
+      <td><span class="pill">${esc(r.category) || "—"}</span><br>
+          <span class="pill group">${esc(r.group)}</span></td>
+      <td>${esc(r.state) || '<span class="muted">—</span>'}</td>
+      <td><div class="contact-chips">${contactChips(r, 3)}</div></td>
+      <td><div class="social-links">${socialLinks(r, 3)}</div></td>
+      <td><span class="dot-meter" title="${r.completeness} of 7 fields">${[1,2,3,4,5,6,7].map(i =>
+        `<i class="${i <= r.completeness ? "on" : ""}"></i>`).join("")}</span></td>
+    </tr>`).join("");
+  $("rows").querySelectorAll("tr.rowbtn").forEach((tr) => {
+    const open = () => openDrawer(tr.dataset.url);
+    tr.addEventListener("click", open);
+    tr.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+    });
+  });
+}
+
+/* ---------- fetching ---------- */
+async function fetchJSON(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || `HTTP ${r.status}`);
   return r.json();
 }
 
-function esc(s) { const d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+function queryString() {
+  const p = new URLSearchParams();
+  if (state.q) p.set("q", state.q);
+  if (state.group) p.set("group", state.group);
+  if (state.state) p.set("state", state.state);
+  if (state.category) p.set("category", state.category);
+  if (state.has.size) p.set("has", [...state.has].join(","));
+  p.set("sort", state.sort);
+  p.set("page", state.page);
+  p.set("per_page", state.perPage);
+  return p;
+}
 
-function drawCards(stats) {
+async function refresh() {
+  skeletonRows();
+  $("resultCount").innerHTML = "Loading…";
+  try {
+    const p = queryString();
+    const d = await fetchJSON(`/api/stores?${p}`);
+    state.total = d.total; state.pages = d.pages;
+    state.lastRows = d.rows;
+    renderRows(d.rows);
+    $("resultCount").innerHTML = `<b>${d.total.toLocaleString()}</b> stores match`;
+    $("viewInfo").textContent = `page ${d.page} / ${d.pages}`;
+    $("pinfo").textContent = `Page ${d.page} of ${d.pages}`;
+    $("prev").disabled = d.page <= 1;
+    $("next").disabled = d.page >= d.pages;
+    const fp = new URLSearchParams(p);
+    fp.delete("page");
+    fetchJSON(`/api/stores?${fp}&facets=1`)
+      .then((f) => {
+        if (state.page !== d.page) return; // stale response guard
+        renderBars($("chartState"), f.facets.states, 9,
+          (k) => setFilter("state", k === state.state ? "" : k), state.state);
+        renderBars($("chartGroup"), f.facets.groups, 11,
+          (k) => setFilter("group", k === state.group ? "" : k), state.group);
+      })
+      .catch(() => {});
+  } catch (e) {
+    $("rows").innerHTML = `<tr><td colspan="7"><div class="state-msg">
+      <b>Couldn't load stores</b> ${esc(e.message)}
+      <div style="margin-top:10px"><button class="btn" onclick="refresh()">Retry</button></div>
+    </div></td></tr>`;
+  }
+}
+
+/* ---------- filters ---------- */
+function setFilter(key, value) {
+  state[key] = value;
+  state.page = 1;
+  if (key === "group") state.category = "";
+  syncControls();
+  refresh();
+}
+function syncControls() {
+  $("fGroup").value = state.group;
+  $("fState").value = state.state;
+  $("fCategory").value = state.category;
+  $("sort").value = state.sort;
+  document.querySelectorAll(".toggle").forEach((t) =>
+    t.setAttribute("aria-pressed", state.has.has(t.dataset.has)));
+}
+function clearAllFilters() {
+  state.q = ""; state.group = ""; state.state = ""; state.category = "";
+  state.has.clear(); state.page = 1;
+  $("q").value = ""; $("nlq").value = "";
+  $("interpBox").innerHTML = "";
+  syncControls(); refresh();
+}
+
+/* ---------- stats + selects ---------- */
+function renderStats(stats) {
   const fc = stats.field_completeness || {};
-  const pct = (k) => fc[k] ? fc[k].pct + "%" : "—";
+  const pct = (k) => fc[k] ? `${fc[k].pct}%` : "—";
   const cards = [
     [stats.total.toLocaleString(), "verified stores"],
     [stats.states.length, "states & UTs"],
     [stats.categories.length, "categories"],
-    [pct("contacts_email_or_phone"), "with contacts"],
-    [pct("state"), "with state"],
-    [pct("logo"), "with logo"],
+    [pct("contacts_email_or_phone"), "have contacts"],
+    [pct("tagline"), "have tagline"],
+    [pct("logo"), "have logo"],
   ];
   $("cards").innerHTML = cards.map(([b, s]) =>
-    `<div class="card"><b>${esc(String(b))}</b><span>${esc(s)}</span></div>`).join("");
-  for (const [sel, list] of [[$("state"), stats.states], [$("category"), stats.categories]]) {
-    for (const v of list) {
-      const o = document.createElement("option");
-      o.value = v; o.textContent = v; sel.appendChild(o);
-    }
-  }
+    `<div class="card"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join("");
 }
 
-function socialIcons(r) {
-  const links = [];
-  for (const [k, label] of [["instagram","IG"],["facebook","FB"],["twitter","X"],
-                            ["linkedin","in"],["youtube","YT"]]) {
-    if (r[k]) links.push(`<a href="${esc(r[k])}" target="_blank" rel="noopener">${label}</a>`);
-  }
-  return links.join(" ") || '<span style="color:#4b5563">—</span>';
+function fillSelect(sel, values, allLabel) {
+  sel.innerHTML = `<option value="">${allLabel}</option>` +
+    values.map((v) => `<option value="${esc(v)}">${esc(v)}</option>`).join("");
 }
 
-function drawRows(data) {
-  if (!data.rows.length) {
-    $("rows").innerHTML = '<tr><td colspan="5" class="empty">No stores match those filters.</td></tr>';
-    $("pinfo").textContent = ""; return;
-  }
-  $("rows").innerHTML = data.rows.map((r) => {
-    const domain = (r.domain_url || "").replace(/^https?:\/\//, "");
-    return `<tr>
-      <td><div class="store">
-        <img class="logo" loading="lazy" src="${esc(r.logo_url)}" alt=""
-             onerror="this.style.visibility='hidden'">
-        <div>
-          <a class="domain" href="${esc(r.domain_url)}" target="_blank" rel="noopener">${esc(domain)}</a>
-          <div class="name">${esc(r.store_name)}</div>
-          <div class="tag">${esc(r.tagline)}</div>
-        </div>
-      </div></td>
-      <td><span class="pill">${esc(r.category) || "—"}</span></td>
-      <td>${esc(r.state) || "—"}</td>
-      <td class="contacts">${esc(r.emails)}${r.emails && r.phones ? "<br>" : ""}${esc(r.phones)}</td>
-      <td class="socials">${socialIcons(r)}</td>
-    </tr>`;
-  }).join("");
-  $("pinfo").textContent = `Page ${data.page} of ${data.pages} · ${data.total.toLocaleString()} stores`;
-  $("prev").disabled = data.page <= 1;
-  $("next").disabled = data.page >= data.pages;
+/* ---------- drawer ---------- */
+function openDrawer(domain) {
+  const r = state.lastRows.find((x) => x.domain_url === domain);
+  if (!r) return;
+  lastFocused = document.activeElement;
+  $("drawerIdx").textContent = `dataset row #${r.index}`;
+  const domainClean = (r.domain_url || "").replace(/^https?:\/\//, "");
+  $("drawerBody").innerHTML = `
+    <div class="brand">
+      ${avatarHTML(r, true)}
+      <div>
+        <h2>${esc(r.store_name || domainClean)}</h2>
+        <div class="store-domain"><a href="${esc(r.domain_url)}" target="_blank" rel="noopener">${esc(domainClean)}</a></div>
+      </div>
+    </div>
+    ${r.tagline ? `<div class="tagline-full">${esc(r.tagline)}</div>` : ""}
+    <div class="dsec"><h3>Category</h3>
+      <span class="pill">${esc(r.category) || "—"}</span>
+      <span class="muted" style="font-size:12px"> group: ${esc(r.group)}</span></div>
+    <div class="dsec"><h3>Location</h3>
+      <dl class="kv"><dt>State</dt><dd>${esc(r.state) || '<span class="muted">not published</span>'}</dd></dl></div>
+    <div class="dsec"><h3>Contacts</h3>
+      <dl class="kv">
+        <dt>Emails</dt><dd><div class="contact-chips">${(r.emails || []).length
+          ? r.emails.map((e) => `<a class="chip-line" href="mailto:${esc(e)}">${esc(e)}</a>`).join("")
+          : '<span class="muted">not published</span>'}</div></dd>
+        <dt>Phones</dt><dd><div class="contact-chips">${(r.phones || []).length
+          ? r.phones.map((p) => `<a class="chip-line" href="tel:${esc(p.replace(/\s+/g, ""))}">${esc(fmtPhone(p))}</a>`).join("")
+          : '<span class="muted">not published</span>'}</div></dd>
+      </dl></div>
+    <div class="dsec"><h3>Socials</h3>
+      <div class="social-links" style="max-width:none">${socialLinks(r)}</div></div>
+    <div class="dsec"><h3>Verification</h3>
+      <dl class="kv">
+        <dt>Shopify ID</dt><dd class="prov">${esc(r.myshopify_domain) || "—"}</dd>
+        <dt>Completeness</dt><dd>${r.completeness} of 7 fields</dd>
+        <dt>Found via</dt><dd class="prov">${esc(r.sources) || "—"}</dd>
+      </dl></div>`;
+  $("backdrop").classList.add("open");
+  $("drawer").classList.add("open");
+  $("drawer").scrollTop = 0;
+  $("drawerClose").focus();
+  document.body.style.overflow = "hidden";
 }
+function closeDrawer() {
+  $("backdrop").classList.remove("open");
+  $("drawer").classList.remove("open");
+  document.body.style.overflow = "";
+  if (lastFocused) lastFocused.focus();
+}
+$("drawerClose").addEventListener("click", closeDrawer);
+$("backdrop").addEventListener("click", closeDrawer);
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && $("drawer").classList.contains("open")) closeDrawer();
+});
 
-async function refresh() {
+/* ---------- natural language query ---------- */
+async function runQuery() {
+  const text = $("nlq").value.trim();
+  if (!text) { clearAllFilters(); return; }
+  skeletonRows();
+  $("resultCount").innerHTML = "Interpreting query…";
+  $("interpBox").innerHTML = "";
   try {
-    const data = await api("/api/stores", { ...state, per_page: 50 });
-    drawRows(data);
+    const d = await fetchJSON(`/api/query?text=${encodeURIComponent(text)}`);
+    const chips = d.interpretation.map(([k, v]) => {
+      const label = k === "state" ? `state: ${v}`
+                  : k === "category" ? `category: ${v}`
+                  : k === "text" ? `“${v}”`
+                  : `has ${v}`;
+      return `<span class="chip"><b>${esc(label)}</b></span>`;
+    }).join("");
+    $("interpBox").innerHTML = `<div class="interp">
+      <span class="lbl">Interpreted as:</span>${chips}
+      <span class="lbl" style="margin-left:auto">${d.total.toLocaleString()} matches · showing ${d.rows.length}</span>
+      <button class="clear" id="clearInterp">clear</button>
+    </div>`;
+    $("clearInterp").addEventListener("click", () => {
+      $("nlq").value = ""; $("interpBox").innerHTML = "";
+    });
+    state.lastRows = d.rows;
+    renderRows(d.rows);
+    $("resultCount").innerHTML = `<b>${d.total.toLocaleString()}</b> stores match this query`;
+    $("viewInfo").textContent = "query view";
+    $("pinfo").textContent = `Query view · ${d.rows.length} shown`;
+    $("prev").disabled = true; $("next").disabled = true;
   } catch (e) {
-    $("rows").innerHTML = `<tr><td colspan="5" class="empty">API error: ${esc(e.message)}</td></tr>`;
+    $("rows").innerHTML = `<tr><td colspan="7"><div class="state-msg">
+      <b>Query failed</b> ${esc(e.message)}</div></td></tr>`;
   }
 }
 
+/* ---------- export ---------- */
+$("exportBtn").addEventListener("click", () => {
+  const p = queryString();
+  p.delete("page"); p.set("format", "csv");
+  location.href = `/api/stores?${p}`;
+});
+
+/* ---------- events ---------- */
 let debounce;
 $("q").addEventListener("input", (e) => {
   clearTimeout(debounce);
-  debounce = setTimeout(() => { state.q = e.target.value; state.page = 1; refresh(); }, 300);
+  debounce = setTimeout(() => { state.q = e.target.value.trim().toLowerCase(); state.page = 1; refresh(); }, 250);
 });
-for (const [id, key] of [["state","state"], ["category","category"], ["has","has"]]) {
-  $(id).addEventListener("change", (e) => { state[key] = e.target.value; state.page = 1; refresh(); });
-}
-$("prev").addEventListener("click", () => { state.page--; refresh(); window.scrollTo(0, 0); });
-$("next").addEventListener("click", () => { state.page++; refresh(); window.scrollTo(0, 0); });
+$("fGroup").addEventListener("change", (e) => setFilter("group", e.target.value));
+$("fState").addEventListener("change", (e) => setFilter("state", e.target.value));
+$("fCategory").addEventListener("change", (e) => setFilter("category", e.target.value));
+$("sort").addEventListener("change", (e) => setFilter("sort", e.target.value));
+document.querySelectorAll(".toggle").forEach((t) =>
+  t.addEventListener("click", () => {
+    const h = t.dataset.has;
+    state.has.has(h) ? state.has.delete(h) : state.has.add(h);
+    state.page = 1; syncControls(); refresh();
+  }));
+$("prev").addEventListener("click", () => { state.page--; refresh(); window.scrollTo({ top: 0 }); });
+$("next").addEventListener("click", () => { state.page++; refresh(); window.scrollTo({ top: 0 }); });
+$("askBtn").addEventListener("click", runQuery);
+$("nlq").addEventListener("keydown", (e) => { if (e.key === "Enter") runQuery(); });
+document.querySelectorAll("[data-example]").forEach((b) =>
+  b.addEventListener("click", () => { $("nlq").value = b.dataset.example; runQuery(); }));
 
+/* ---------- init ---------- */
 (async () => {
+  skeletonRows();
   try {
-    const stats = await api("/api/stats", {});
-    drawCards(stats);
-  } catch (e) { /* cards are non-critical */ }
-  refresh();
+    const stats = await fetchJSON("/api/stats");
+    state.stats = stats;
+    state.states = stats.states; state.categories = stats.categories;
+    renderStats(stats);
+    fillSelect($("fState"), stats.states, "All states");
+    fillSelect($("fCategory"), stats.categories, "All categories");
+    fillSelect($("fGroup"), stats.groups.filter((g) => g !== "Other"), "All category groups");
+    renderBars($("chartState"), stats.state_distribution, 9,
+      (k) => setFilter("state", k), "");
+    renderBars($("chartGroup"), stats.group_distribution, 11,
+      (k) => setFilter("group", k), "");
+  } catch (e) { /* stats are non-critical; the table still loads */ }
+  await refresh();
 })();
 </script>
 </body>
