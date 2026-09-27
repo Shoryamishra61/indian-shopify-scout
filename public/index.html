@@ -3,308 +3,339 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Indian Shopify Stores — 2,440 verified stores</title>
+<title>Indian Shopify Stores · 2,440 verified stores</title>
 <meta name="description" content="Searchable dataset of 2,440 verified Shopify stores operated from India: contacts, socials, category, tagline, logo and state.">
 <style>
-/* ---------- semantic tokens ---------- */
+/* ---------- semantic tokens: light, off-white, Apple-like ---------- */
 :root {
-  --bg: #f7f7f5;
+  --bg: #fafaf8;
   --surface: #ffffff;
-  --surface-muted: #f0f0ee;
-  --ink: #1a1d21;
-  --ink-muted: #5c6470;
-  --ink-faint: #9aa1ab;
-  --border: #e2e2de;
-  --border-strong: #cfcfc9;
-  --accent: #0f6e5c;
+  --surface-muted: #f4f4f1;
+  --ink: #1d1d1f;
+  --ink-secondary: #515154;
+  --ink-muted: #86868b;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.16);
+  --accent: #0071e3;
+  --accent-press: #005bb8;
+  --accent-tint: rgba(0, 113, 227, 0.08);
   --accent-ink: #ffffff;
-  --accent-muted: #e3efec;
-  --focus: #0f6e5c;
+  --focus: #0071e3;
   --radius-s: 6px;
-  --radius-m: 8px;
-  --radius-l: 12px;
-  --shadow-drawer: 0 8px 32px rgba(20, 24, 28, .18);
-  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-  --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #131518; --surface: #1c1f23; --surface-muted: #24282d;
-    --ink: #e8eaed; --ink-muted: #9aa1ab; --ink-faint: #6b7280;
-    --border: #2c3136; --border-strong: #3d434a;
-    --accent: #3ecfaf; --accent-muted: #1d2f2b;
-  }
+  --radius-m: 10px;
+  --radius-l: 14px;
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04);
+  --shadow-drawer: -8px 0 40px rgba(0, 0, 0, 0.12);
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Inter, sans-serif;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, monospace;
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 var(--font);
-}
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 14px/1.55 var(--font); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
+  html { scroll-behavior: auto; }
 }
-button { font: inherit; color: inherit; }
-a { color: var(--accent); }
-:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
 
-.wrap { max-width: 1240px; margin: 0 auto; padding: 20px clamp(14px, 3vw, 28px) 72px; }
+.wrap { max-width: 1220px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 28px) 80px; }
 
 /* ---------- header ---------- */
 header.top {
-  display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
-  justify-content: space-between; padding: 8px 0 18px;
-  border-bottom: 1px solid var(--border); margin-bottom: 18px;
+  position: sticky; top: 0; z-index: 20;
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+  justify-content: space-between;
+  margin: 0 calc(-1 * clamp(14px, 3vw, 28px)); padding: 14px clamp(14px, 3vw, 28px);
+  background: rgba(250, 250, 248, 0.82);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid var(--border);
 }
-h1 { font-size: 19px; line-height: 1.25; margin: 0; letter-spacing: -0.01em; }
-.subtitle { color: var(--ink-muted); font-size: 13px; margin: 4px 0 0; max-width: 720px; }
-.subtitle a { color: inherit; }
-.top-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+h1 { font-size: 17px; font-weight: 500; letter-spacing: -0.01em; margin: 0; }
+h1 .count { color: var(--ink-muted); }
+.subtitle { display: none; }
+header .brandcol { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+header .tag { font-size: 12px; color: var(--ink-muted); }
 .btn {
   display: inline-flex; align-items: center; gap: 7px;
-  background: var(--surface); border: 1px solid var(--border-strong);
-  border-radius: var(--radius-m); padding: 8px 14px; font-size: 13.5px;
-  cursor: pointer; text-decoration: none; color: var(--ink);
+  background: var(--accent); color: var(--accent-ink);
+  border-radius: var(--radius-m); padding: 8px 16px; font-size: 13.5px; font-weight: 400;
+  transition: background-color .16s var(--ease), transform .16s var(--ease);
 }
-.btn:hover { border-color: var(--accent); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.btn.primary:hover { opacity: .92; }
+.btn:hover { background: var(--accent-press); text-decoration: none; }
+.btn:active { transform: scale(0.98); }
+.btn.ghost { background: var(--surface-muted); color: var(--ink); }
+.btn.ghost:hover { background: var(--border); }
+
+/* ---------- entrance motion ---------- */
+.rise { animation: rise .5s var(--ease) both; }
+.rise-1 { animation-delay: .04s; } .rise-2 { animation-delay: .09s; }
+.rise-3 { animation-delay: .14s; } .rise-4 { animation-delay: .19s; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
 /* ---------- query bar ---------- */
-.querybar { margin: 0 0 14px; }
-.querybar label { display: block; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; }
-.query-row { display: flex; gap: 8px; }
+.querybar { margin: 26px 0 8px; }
+.querybar label { display: block; font-size: 13px; color: var(--ink-secondary); margin-bottom: 8px; }
+.query-row { display: flex; gap: 10px; }
 .query-row input {
   flex: 1; min-width: 0; background: var(--surface); color: var(--ink);
   border: 1px solid var(--border-strong); border-radius: var(--radius-m);
-  padding: 11px 14px; font-size: 14.5px;
+  padding: 12px 16px; font-size: 15px;
+  transition: border-color .16s var(--ease), box-shadow .16s var(--ease);
 }
-.query-row input::placeholder { color: var(--ink-faint); }
-.hint { color: var(--ink-faint); font-size: 12px; margin-top: 6px; }
-.hint button {
-  background: none; border: none; padding: 0; color: var(--ink-muted);
-  cursor: pointer; text-decoration: underline; font-size: 12px;
-}
+.query-row input::placeholder { color: var(--ink-muted); }
+.query-row input:focus { outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-tint); }
+.hint { color: var(--ink-muted); font-size: 12px; margin: 8px 2px 0; }
+.hint button { color: var(--accent); font-size: 12px; padding: 0; }
+.hint button:hover { text-decoration: underline; }
 .interp {
   display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
-  background: var(--accent-muted); border: 1px solid var(--border);
-  border-radius: var(--radius-m); padding: 8px 10px; margin-top: 10px;
-  font-size: 13px;
+  background: var(--accent-tint); border-radius: var(--radius-m);
+  padding: 9px 12px; margin-top: 10px; font-size: 13px;
+  animation: rise .3s var(--ease) both;
 }
-.interp .lbl { color: var(--ink-muted); font-size: 12px; margin-right: 2px; }
+.interp .lbl { color: var(--ink-secondary); font-size: 12.5px; margin-right: 2px; }
 .chip {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: var(--surface); border: 1px solid var(--border-strong);
-  border-radius: var(--radius-s); padding: 2px 9px; font-size: 12.5px;
+  display: inline-flex; align-items: center;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-s); padding: 2px 9px; font-size: 12.5px; font-weight: 400;
+  color: var(--ink);
 }
-.chip b { font-weight: 600; }
-.interp .clear {
-  margin-left: auto; background: none; border: none; cursor: pointer;
-  color: var(--accent); font-size: 12.5px; text-decoration: underline; padding: 2px;
-}
+.interp .matches { margin-left: auto; color: var(--ink-secondary); font-size: 12.5px; }
+.interp .clear { color: var(--accent); font-size: 12.5px; padding: 2px; }
+.interp .clear:hover { text-decoration: underline; }
 
 /* ---------- stat cards ---------- */
 .cards {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px; margin-bottom: 18px;
+  gap: 10px; margin: 20px 0 14px;
 }
-.card { background: var(--surface); border: 1px solid var(--border);
-        border-radius: var(--radius-m); padding: 12px 14px; }
-.card b { display: block; font-size: 21px; font-weight: 650; letter-spacing: -0.01em; }
-.card span { color: var(--ink-muted); font-size: 12px; }
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-m); padding: 13px 16px; box-shadow: var(--shadow-soft);
+}
+.card .num {
+  display: block; font-size: 22px; font-weight: 500; letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums;
+}
+.card .lbl { color: var(--ink-muted); font-size: 12px; }
 
 /* ---------- charts ---------- */
-.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
 @media (max-width: 860px) { .charts { grid-template-columns: 1fr; } }
-.panel { background: var(--surface); border: 1px solid var(--border);
-         border-radius: var(--radius-l); padding: 14px 16px; }
-.panel h2 { font-size: 13px; font-weight: 600; margin: 0 0 10px; color: var(--ink-muted);
-            text-transform: uppercase; letter-spacing: .05em; }
-.bar-row { display: grid; grid-template-columns: 128px 1fr 44px; gap: 8px;
-           align-items: center; width: 100%; background: none; border: none;
-           padding: 3px 0; cursor: pointer; text-align: left; border-radius: 4px; }
-.bar-row:hover .bar-track { background: var(--accent-muted); }
-.bar-row:hover { color: var(--accent); }
+.panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-l); padding: 16px 18px; box-shadow: var(--shadow-soft);
+}
+.panel h2 {
+  font-size: 12px; font-weight: 500; margin: 0 0 12px; color: var(--ink-muted);
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.bar-row {
+  display: grid; grid-template-columns: 132px 1fr 44px; gap: 10px;
+  align-items: center; width: 100%; padding: 3.5px 0; text-align: left;
+  border-radius: var(--radius-s);
+  transition: background-color .14s var(--ease);
+}
+.bar-row:hover { background: var(--surface-muted); }
+.bar-row:hover .bar-label { color: var(--accent); }
 .bar-label { font-size: 12.5px; color: var(--ink); white-space: nowrap;
-             overflow: hidden; text-overflow: ellipsis; }
-.bar-track { display: block; background: var(--surface-muted); border-radius: 3px;
-             height: 14px; overflow: hidden; }
-.bar-fill { display: block; height: 100%; background: var(--accent);
-            border-radius: 3px; min-width: 2px; }
+             overflow: hidden; text-overflow: ellipsis;
+             transition: color .14s var(--ease); }
+.bar-track { display: block; background: var(--surface-muted); border-radius: 4px;
+             height: 6px; overflow: hidden; }
+.bar-fill { display: block; height: 100%; background: var(--accent); border-radius: 4px;
+            width: 0;
+            transition: width .6s var(--ease); }
 .bar-count { font-size: 12px; color: var(--ink-muted); text-align: right;
              font-variant-numeric: tabular-nums; }
 
 /* ---------- toolbar ---------- */
-.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-           margin-bottom: 12px; }
-.toolbar input[type=search] {
-  flex: 1 1 220px; min-width: 160px; background: var(--surface); color: var(--ink);
-  border: 1px solid var(--border-strong); border-radius: var(--radius-m);
-  padding: 8px 12px; font-size: 13.5px;
-}
-.toolbar select {
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 18px 0 10px; }
+.toolbar input[type=search], .toolbar select {
   background: var(--surface); color: var(--ink);
   border: 1px solid var(--border-strong); border-radius: var(--radius-m);
-  padding: 8px 10px; font-size: 13.5px; max-width: 210px;
+  padding: 8px 12px; font-size: 13.5px;
+  transition: border-color .16s var(--ease), box-shadow .16s var(--ease);
 }
-.toggle { display: inline-flex; align-items: center; gap: 5px;
-          background: var(--surface); border: 1px solid var(--border-strong);
-          border-radius: var(--radius-m); padding: 8px 12px; font-size: 13px;
-          cursor: pointer; user-select: none; }
+.toolbar input[type=search] { flex: 1 1 220px; min-width: 160px; }
+.toolbar input[type=search]:focus, .toolbar select:focus {
+  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-tint);
+}
+.toolbar select { max-width: 200px; }
+.toggle {
+  background: var(--surface); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-m); padding: 8px 13px; font-size: 13px;
+  transition: background-color .16s var(--ease), border-color .16s var(--ease),
+              color .16s var(--ease);
+}
+.toggle:hover { border-color: var(--accent); }
 .toggle[aria-pressed="true"] { background: var(--accent); border-color: var(--accent);
                                color: var(--accent-ink); }
 .count-line { color: var(--ink-muted); font-size: 13px; margin: 0 0 10px;
               display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-.count-line b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.count-line .num { color: var(--ink); font-variant-numeric: tabular-nums; }
 
 /* ---------- table ---------- */
-.tablebox { background: var(--surface); border: 1px solid var(--border);
-            border-radius: var(--radius-l); overflow-x: auto; }
-table { border-collapse: collapse; width: 100%; min-width: 880px; }
+.tablebox {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-l); overflow-x: auto; box-shadow: var(--shadow-soft);
+}
+table { border-collapse: collapse; width: 100%; min-width: 900px; }
 thead th {
-  text-align: left; font-size: 11.5px; font-weight: 600; color: var(--ink-muted);
-  text-transform: uppercase; letter-spacing: .05em;
-  padding: 10px 12px; border-bottom: 1px solid var(--border);
+  text-align: left; font-size: 11px; font-weight: 500; color: var(--ink-muted);
+  text-transform: uppercase; letter-spacing: .06em;
+  padding: 11px 14px; border-bottom: 1px solid var(--border);
   background: var(--surface);
 }
-tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border);
+tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border);
            vertical-align: top; font-size: 13px; }
 tbody tr:last-child td { border-bottom: none; }
 tbody tr.rowbtn { cursor: pointer; }
+tbody tr.rowbtn td { transition: background-color .13s var(--ease); }
 tbody tr.rowbtn:hover td { background: var(--surface-muted); }
-td.idx { color: var(--ink-faint); font-family: var(--mono); font-size: 12px;
+td.idx { color: var(--ink-faint, #aeaeb2); font-family: var(--mono); font-size: 11.5px;
          font-variant-numeric: tabular-nums; white-space: nowrap; }
-.store-cell { display: flex; gap: 10px; align-items: flex-start; min-width: 260px; }
+.store-cell { display: flex; gap: 11px; align-items: flex-start; min-width: 270px; }
 .avatar {
-  width: 36px; height: 36px; border-radius: var(--radius-m); flex: none;
+  width: 38px; height: 38px; border-radius: var(--radius-m); flex: none;
   display: flex; align-items: center; justify-content: center;
-  background: var(--accent-muted); color: var(--accent);
-  font-weight: 650; font-size: 15px; overflow: hidden;
+  background: var(--surface-muted); color: var(--ink-secondary);
+  font-weight: 400; font-size: 15px; overflow: hidden;
+  border: 1px solid var(--border);
 }
 .avatar img { width: 100%; height: 100%; object-fit: contain; }
-.store-name { font-weight: 600; }
+.store-name { font-weight: 400; color: var(--ink); }
 .store-domain { font-family: var(--mono); font-size: 11.5px; color: var(--ink-muted); }
-.store-domain a { color: inherit; text-decoration: none; }
-.store-domain a:hover { color: var(--accent); text-decoration: underline; }
+.store-domain a { color: inherit; }
+.store-domain a:hover { color: var(--accent); }
 .tagline {
   color: var(--ink-muted); font-size: 12px; margin-top: 3px;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   overflow: hidden; max-width: 380px;
 }
 .pill { display: inline-block; background: var(--surface-muted);
-        border: 1px solid var(--border); border-radius: var(--radius-s);
-        padding: 1px 8px; font-size: 12px; white-space: nowrap; }
-.pill.group { color: var(--ink-muted); }
+        border-radius: var(--radius-s); padding: 1px 8px; font-size: 12px;
+        white-space: nowrap; color: var(--ink-secondary); }
+.pill.group { color: var(--ink-muted); font-size: 11.5px; }
 .contact-chips { display: flex; flex-direction: column; gap: 3px; max-width: 230px; }
 .chip-line {
-  display: inline-flex; align-items: center; gap: 4px;
+  display: inline-flex; align-items: center; width: fit-content; max-width: 100%;
   font-family: var(--mono); font-size: 11.5px; color: var(--ink);
-  text-decoration: none; background: var(--surface-muted);
-  border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px;
-  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  border-radius: 5px; padding: 2.5px 8px;
+  background: var(--surface-muted);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  transition: background-color .14s var(--ease), color .14s var(--ease);
 }
-a.chip-line:hover { border-color: var(--accent); color: var(--accent); }
-.muted { color: var(--ink-faint); }
+a.chip-line:hover { background: var(--accent-tint); color: var(--accent); }
+.muted { color: var(--ink-muted); }
 .social-links { display: flex; flex-wrap: wrap; gap: 4px; max-width: 130px; }
 .social-links a {
   display: inline-block; background: var(--surface-muted);
-  border: 1px solid var(--border); border-radius: 4px;
-  padding: 2px 7px; font-size: 11.5px; color: var(--ink-muted);
-  text-decoration: none; text-transform: uppercase; letter-spacing: .03em;
+  border-radius: 5px; padding: 2.5px 8px; font-size: 11px; color: var(--ink-secondary);
+  letter-spacing: .03em;
+  transition: background-color .14s var(--ease), color .14s var(--ease);
 }
-.social-links a:hover { border-color: var(--accent); color: var(--accent); }
-.dot-meter { display: inline-flex; gap: 2.5px; }
-.dot-meter i { width: 7px; height: 7px; border-radius: 50%;
+.social-links a:hover { background: var(--accent-tint); color: var(--accent); }
+.dot-meter { display: inline-flex; gap: 3px; }
+.dot-meter i { width: 6px; height: 6px; border-radius: 50%;
                background: var(--surface-muted); border: 1px solid var(--border-strong); }
 .dot-meter i.on { background: var(--accent); border-color: var(--accent); }
 
 /* ---------- pager ---------- */
-.pager { display: flex; gap: 10px; align-items: center; justify-content: center;
-         margin-top: 16px; color: var(--ink-muted); font-size: 13px;
+.pager { display: flex; gap: 12px; align-items: center; justify-content: center;
+         margin-top: 18px; color: var(--ink-muted); font-size: 13px;
          font-variant-numeric: tabular-nums; }
-.pager button { background: var(--surface); border: 1px solid var(--border-strong);
-                border-radius: var(--radius-m); padding: 7px 14px; cursor: pointer;
-                font-size: 13px; }
-.pager button:disabled { opacity: .4; cursor: default; }
-.pager button:not(:disabled):hover { border-color: var(--accent); }
+.pager button {
+  background: var(--surface); border: 1px solid var(--border-strong);
+  border-radius: var(--radius-m); padding: 7px 15px; font-size: 13px;
+  transition: border-color .16s var(--ease), background-color .16s var(--ease);
+}
+.pager button:disabled { opacity: .35; cursor: default; }
+.pager button:not(:disabled):hover { border-color: var(--accent); color: var(--accent); }
 
 /* ---------- drawer ---------- */
 .backdrop {
-  position: fixed; inset: 0; background: rgba(15, 18, 22, .45);
-  opacity: 0; pointer-events: none; transition: opacity .15s; z-index: 40;
+  position: fixed; inset: 0; background: rgba(0, 0, 0, .28);
+  opacity: 0; pointer-events: none; transition: opacity .22s var(--ease); z-index: 40;
 }
 .backdrop.open { opacity: 1; pointer-events: auto; }
 .drawer {
-  position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100vw);
-  background: var(--surface); border-left: 1px solid var(--border);
-  box-shadow: var(--shadow-drawer); z-index: 50;
-  transform: translateX(102%); transition: transform .18s ease-out;
-  overflow-y: auto; padding: 22px 24px 40px;
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(430px, 100vw);
+  background: var(--surface); box-shadow: var(--shadow-drawer); z-index: 50;
+  transform: translateX(103%); transition: transform .26s var(--ease);
+  overflow-y: auto; padding: 20px 24px 44px;
 }
 .drawer.open { transform: translateX(0); }
-.drawer-head { display: flex; justify-content: space-between; align-items: flex-start;
-               gap: 12px; margin-bottom: 14px; }
-.drawer-close { background: none; border: 1px solid var(--border-strong);
-                border-radius: var(--radius-s); padding: 4px 10px; cursor: pointer;
-                font-size: 13px; }
-.drawer-close:hover { border-color: var(--accent); }
+.drawer-head { display: flex; justify-content: space-between; align-items: center;
+               gap: 12px; margin-bottom: 16px; }
+.drawer-head .idx { color: var(--ink-muted); font-size: 12px; }
+.drawer-close {
+  border: 1px solid var(--border-strong); border-radius: var(--radius-m);
+  padding: 5px 12px; font-size: 12.5px; color: var(--ink-secondary);
+  transition: background-color .14s var(--ease);
+}
+.drawer-close:hover { background: var(--surface-muted); }
 .drawer .brand { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; }
-.drawer .brand .avatar { width: 56px; height: 56px; font-size: 22px;
-                         border: 1px solid var(--border); }
-.drawer .brand h2 { margin: 0; font-size: 17px; line-height: 1.3; }
+.drawer .brand .avatar { width: 58px; height: 58px; font-size: 22px; }
+.drawer .brand h2 { margin: 0; font-size: 16px; font-weight: 500; line-height: 1.3; }
 .drawer .brand .store-domain { font-size: 12px; }
-.dsec { margin-top: 18px; }
-.dsec h3 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em;
-           color: var(--ink-muted); margin: 0 0 8px; }
-.kv { display: grid; grid-template-columns: 110px 1fr; gap: 4px 10px; font-size: 13px; }
+.dsec { margin-top: 20px; }
+.dsec h3 { font-size: 11px; font-weight: 500; text-transform: uppercase;
+           letter-spacing: .06em; color: var(--ink-muted); margin: 0 0 8px; }
+.kv { display: grid; grid-template-columns: 100px 1fr; gap: 6px 10px; font-size: 13px; }
 .kv dt { color: var(--ink-muted); }
 .kv dd { margin: 0; word-break: break-word; }
 .tagline-full { font-size: 13.5px; color: var(--ink); background: var(--surface-muted);
-                border-left: 3px solid var(--accent); padding: 8px 12px;
-                border-radius: 0 var(--radius-m) var(--radius-m) 0; }
-.prov { color: var(--ink-faint); font-size: 11.5px; font-family: var(--mono);
+                border-radius: var(--radius-m); padding: 10px 14px; }
+.prov { color: var(--ink-muted); font-size: 11.5px; font-family: var(--mono);
         word-break: break-all; }
 
 /* ---------- states ---------- */
-.state-msg { text-align: center; padding: 56px 16px; color: var(--ink-muted); }
-.state-msg b { display: block; color: var(--ink); font-size: 15px; margin-bottom: 4px; }
+.state-msg { text-align: center; padding: 60px 16px; color: var(--ink-muted); }
+.state-msg .t { display: block; color: var(--ink); font-size: 15px; margin-bottom: 4px; }
 .skeleton td { color: transparent; }
 .skeleton .sk {
   display: block; height: 12px; border-radius: 4px;
-  background: linear-gradient(90deg, var(--surface-muted), var(--border), var(--surface-muted));
-  background-size: 200% 100%; animation: shimmer 1.2s linear infinite;
+  background: linear-gradient(90deg, var(--surface-muted) 25%, var(--border) 50%, var(--surface-muted) 75%);
+  background-size: 200% 100%; animation: shimmer 1.4s linear infinite;
 }
 @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
-footer.foot { margin-top: 26px; color: var(--ink-faint); font-size: 12.5px;
-              border-top: 1px solid var(--border); padding-top: 14px; }
+footer.foot { margin-top: 30px; color: var(--ink-muted); font-size: 12.5px;
+              border-top: 1px solid var(--border); padding-top: 16px;
+              max-width: 780px; }
+footer.foot code { font-family: var(--mono); font-size: 11.5px;
+                   background: var(--surface-muted); border-radius: 4px; padding: 1px 5px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <header class="top">
-    <div>
-      <h1>Indian Shopify Stores — verified dataset</h1>
-      <p class="subtitle">
-        2,440 Shopify stores confirmed as operated from India via the merchant's own
-        Shopify configuration (<code>/meta.json</code>, country IN). Discovered by sweeping
-        the public Common Crawl index; crawled respectfully at ≤1 request/second per host.
-        Method: <a href="https://github.com/Shoryamishra61/indian-shopify-scout">github.com/Shoryamishra61/indian-shopify-scout</a>
-      </p>
+    <div class="brandcol">
+      <h1>Indian Shopify Stores <span class="count">2,440 verified</span></h1>
+      <span class="tag">Confirmed via the merchant's own Shopify configuration (country IN) · crawled at 1 request per second per host</span>
     </div>
     <div class="top-actions">
+      <button class="btn ghost" id="repoBtn" onclick="window.open('https://github.com/Shoryamishra61/indian-shopify-scout','_blank')">Method</button>
       <button class="btn" id="exportBtn" title="Download the current filtered view as CSV">Download CSV</button>
     </div>
   </header>
 
-  <div class="querybar">
+  <div class="querybar rise rise-1">
     <label for="nlq">Ask the dataset</label>
     <div class="query-row">
       <input id="nlq" type="text" autocomplete="off"
-             placeholder='e.g. "skincare brands in Gujarat with phone" or "top 10 coffee stores with email"'>
-      <button class="btn primary" id="askBtn">Search</button>
+             placeholder='Try “skincare brands in Gujarat with phone”'>
+      <button class="btn" id="askBtn">Search</button>
     </div>
     <div id="interpBox"></div>
-    <p class="hint">The query is parsed into explicit filters — nothing is guessed.
+    <p class="hint">Queries are parsed into explicit filters, nothing is guessed.
       Examples:
       <button data-example="saree stores in Rajasthan with email">sarees in Rajasthan with email</button> ·
       <button data-example="ayurveda with instagram">ayurveda with Instagram</button> ·
@@ -313,34 +344,34 @@ footer.foot { margin-top: 26px; color: var(--ink-faint); font-size: 12.5px;
     </p>
   </div>
 
-  <section class="cards" id="cards" aria-label="Dataset summary"></section>
+  <section class="cards rise rise-2" id="cards" aria-label="Dataset summary"></section>
 
-  <section class="charts" aria-label="Distributions">
+  <section class="charts rise rise-3" aria-label="Distributions">
     <div class="panel">
-      <h2>Stores by state — click to filter</h2>
+      <h2>Stores by state</h2>
       <div id="chartState"></div>
     </div>
     <div class="panel">
-      <h2>Stores by category group — click to filter</h2>
+      <h2>Stores by category group</h2>
       <div id="chartGroup"></div>
     </div>
   </section>
 
-  <div class="toolbar" role="search">
-    <input type="search" id="q" placeholder="Filter by name, domain, tagline, email…" aria-label="Filter stores">
+  <div class="toolbar rise rise-4" role="search">
+    <input type="search" id="q" placeholder="Filter by name, domain, tagline, email" aria-label="Filter stores">
     <select id="fGroup" aria-label="Category group"><option value="">All category groups</option></select>
     <select id="fState" aria-label="State"><option value="">All states</option></select>
     <select id="fCategory" aria-label="Category"><option value="">All categories</option></select>
     <select id="sort" aria-label="Sort order">
-      <option value="index">Sort: dataset order</option>
-      <option value="name">Sort: name</option>
-      <option value="state">Sort: state</option>
-      <option value="category">Sort: category</option>
-      <option value="contacts">Sort: most contacts</option>
-      <option value="completeness">Sort: most complete</option>
+      <option value="index">Dataset order</option>
+      <option value="name">Name</option>
+      <option value="state">State</option>
+      <option value="category">Category</option>
+      <option value="contacts">Most contacts</option>
+      <option value="completeness">Most complete</option>
     </select>
   </div>
-  <div class="toolbar" role="group" aria-label="Field availability filters">
+  <div class="toolbar rise rise-4" role="group" aria-label="Field availability filters">
     <button class="toggle" data-has="email" aria-pressed="false">Has email</button>
     <button class="toggle" data-has="phone" aria-pressed="false">Has phone</button>
     <button class="toggle" data-has="instagram" aria-pressed="false">Has Instagram</button>
@@ -350,10 +381,10 @@ footer.foot { margin-top: 26px; color: var(--ink-faint); font-size: 12.5px;
 
   <p class="count-line">
     <span id="resultCount"></span>
-    <span id="viewInfo" class="muted"></span>
+    <span id="viewInfo"></span>
   </p>
 
-  <div class="tablebox">
+  <div class="tablebox rise rise-4">
     <table>
       <thead><tr>
         <th style="width:56px">#</th>
@@ -369,25 +400,26 @@ footer.foot { margin-top: 26px; color: var(--ink-faint); font-size: 12.5px;
   </div>
 
   <div class="pager">
-    <button id="prev">← Previous</button>
+    <button id="prev">Previous</button>
     <span id="pinfo"></span>
-    <button id="next">Next →</button>
+    <button id="next">Next</button>
   </div>
 
   <footer class="foot">
-    Each row is one verified shop (deduplicated on Shopify's own
-    <code>myshopify_domain</code> key). "Fields" counts how many of the 7 required
-    fields are populated for that store. A random 15-row sample was re-verified live
-    after export: 15/15 confirmed. Logos are hotlinked from the stores' own CDNs;
-    a letter mark is shown when one cannot be loaded.
+    Each row is one verified shop, deduplicated on Shopify's own
+    <code>myshopify_domain</code> key. The Fields column counts how many of the 7
+    required fields are populated for that store. A random 15-row sample was
+    re-verified live after export: 15 of 15 confirmed. Logos are hotlinked from the
+    stores' own CDNs; a letter mark is shown when one cannot be loaded. Contact
+    details are published by the stores themselves.
   </footer>
 </div>
 
 <div class="backdrop" id="backdrop"></div>
 <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Store details">
   <div class="drawer-head">
-    <span class="muted" style="font-size:12px" id="drawerIdx"></span>
-    <button class="drawer-close" id="drawerClose">Close (Esc)</button>
+    <span class="idx" id="drawerIdx"></span>
+    <button class="drawer-close" id="drawerClose">Close</button>
   </div>
   <div id="drawerBody"></div>
 </aside>
@@ -398,8 +430,7 @@ const $ = (id) => document.getElementById(id);
 const state = {
   q: "", group: "", state: "", category: "", has: new Set(),
   sort: "index", page: 1, perPage: 50,
-  total: 0, pages: 1, stats: null, states: [], categories: [],
-  lastRows: [],
+  total: 0, pages: 1, states: [], categories: [], lastRows: [],
 };
 let lastFocused = null;
 
@@ -428,14 +459,14 @@ function contactChips(r, max) {
   for (const p of phones) {
     out.push(`<a class="chip-line" href="tel:${esc(p.replace(/\s+/g, ""))}">${esc(fmtPhone(p))}</a>`);
   }
-  return out.join("") || '<span class="muted">not published</span>';
+  return out.join("") || '<span class="muted">Not published</span>';
 }
 const SOCIAL_LABEL = { instagram: "IG", facebook: "FB", twitter: "X",
                        linkedin: "in", youtube: "YT", pinterest: "Pin",
                        whatsapp: "WA", telegram: "TG" };
 function socialLinks(r, max = 99) {
   const entries = Object.entries(r.socials || {});
-  if (!entries.length) return '<span class="muted">—</span>';
+  if (!entries.length) return '<span class="muted">None linked</span>';
   return entries.slice(0, max).map(([k, u]) =>
     `<a href="${esc(u)}" target="_blank" rel="noopener">${SOCIAL_LABEL[k] || esc(k)}</a>`
   ).join("");
@@ -443,14 +474,13 @@ function socialLinks(r, max = 99) {
 function avatarHTML(r, big) {
   const name = r.store_name || (r.domain_url || "").replace(/^https?:\/\/(www\.)?/, "");
   const initial = esc((name[0] || "?").toUpperCase());
-  const cls = big ? ' class="avatar" style="width:56px;height:56px;font-size:22px"'
-                  : ' class="avatar"';
+  const style = big ? ' style="width:58px;height:58px;font-size:22px"' : "";
   if (r.logo_url) {
-    return `<span${cls}><img loading="lazy" referrerpolicy="no-referrer"
+    return `<span class="avatar"${style}><img loading="lazy" referrerpolicy="no-referrer"
       src="${esc(r.logo_url)}" alt=""
-      onerror="this.parentElement.textContent='${initial}'">${initial ? "" : ""}</span>`;
+      onerror="this.parentElement.textContent='${initial}'"></span>`;
   }
-  return `<span${cls}>${initial}</span>`;
+  return `<span class="avatar"${style}>${initial}</span>`;
 }
 
 /* ---------- charts (clickable filters) ---------- */
@@ -458,13 +488,19 @@ function renderBars(el, data, maxBars, onPick, active) {
   const entries = Object.entries(data || {}).slice(0, maxBars);
   const max = Math.max(1, ...entries.map(([, v]) => v));
   el.innerHTML = entries.map(([k, v]) => `
-    <button class="bar-row" data-key="${esc(k)}" aria-pressed="${k === active}">
+    <button class="bar-row" data-key="${esc(k)}" data-pct="${Math.max(2, Math.round(v / max * 100))}"
+            aria-pressed="${k === active}" title="Filter by ${esc(k)}">
       <span class="bar-label">${esc(k)}</span>
-      <span class="bar-track"><span class="bar-fill" style="width:${Math.max(2, Math.round(v / max * 100))}%"></span></span>
+      <span class="bar-track"><span class="bar-fill"></span></span>
       <span class="bar-count">${v.toLocaleString()}</span>
     </button>`).join("");
-  el.querySelectorAll(".bar-row").forEach((b) =>
-    b.addEventListener("click", () => onPick(b.dataset.key)));
+  el.querySelectorAll(".bar-row").forEach((b) => {
+    b.addEventListener("click", () => onPick(b.dataset.key));
+    // grow the bar after paint for the subtle entrance motion
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      b.querySelector(".bar-fill").style.width = b.dataset.pct + "%";
+    }));
+  });
 }
 
 /* ---------- main table ---------- */
@@ -483,9 +519,9 @@ function skeletonRows() {
 function renderRows(rows) {
   if (!rows.length) {
     $("rows").innerHTML = `<tr><td colspan="7"><div class="state-msg">
-      <b>No stores match these filters</b>
+      <span class="t">No stores match these filters</span>
       Try widening the search, or
-      <button class="btn" id="clearAll" style="margin-top:10px">Clear all filters</button>
+      <button class="btn ghost" id="clearAll" style="margin-top:12px">Clear all filters</button>
     </div></td></tr>`;
     const c = $("clearAll");
     if (c) c.addEventListener("click", clearAllFilters);
@@ -498,15 +534,15 @@ function renderRows(rows) {
       <td><div class="store-cell">
         ${avatarHTML(r)}
         <div>
-          <div class="store-name">${esc(r.store_name || "—")}</div>
+          <div class="store-name">${esc(r.store_name || r.domain_url)}</div>
           <div class="store-domain"><a href="${esc(r.domain_url)}" target="_blank"
               rel="noopener" onclick="event.stopPropagation()">${esc((r.domain_url || "").replace(/^https?:\/\//, ""))}</a></div>
           <div class="tagline" title="${esc(r.tagline)}">${esc(r.tagline)}</div>
         </div>
       </div></td>
-      <td><span class="pill">${esc(r.category) || "—"}</span><br>
+      <td><span class="pill">${esc(r.category) || "Unclassified"}</span><br>
           <span class="pill group">${esc(r.group)}</span></td>
-      <td>${esc(r.state) || '<span class="muted">—</span>'}</td>
+      <td>${esc(r.state) || '<span class="muted">Not listed</span>'}</td>
       <td><div class="contact-chips">${contactChips(r, 3)}</div></td>
       <td><div class="social-links">${socialLinks(r, 3)}</div></td>
       <td><span class="dot-meter" title="${r.completeness} of 7 fields">${[1,2,3,4,5,6,7].map(i =>
@@ -543,15 +579,15 @@ function queryString() {
 
 async function refresh() {
   skeletonRows();
-  $("resultCount").innerHTML = "Loading…";
+  $("resultCount").innerHTML = "Loading";
   try {
     const p = queryString();
     const d = await fetchJSON(`/api/stores?${p}`);
     state.total = d.total; state.pages = d.pages;
     state.lastRows = d.rows;
     renderRows(d.rows);
-    $("resultCount").innerHTML = `<b>${d.total.toLocaleString()}</b> stores match`;
-    $("viewInfo").textContent = `page ${d.page} / ${d.pages}`;
+    $("resultCount").innerHTML = `<span class="num">${d.total.toLocaleString()}</span> stores match`;
+    $("viewInfo").textContent = `page ${d.page} of ${d.pages}`;
     $("pinfo").textContent = `Page ${d.page} of ${d.pages}`;
     $("prev").disabled = d.page <= 1;
     $("next").disabled = d.page >= d.pages;
@@ -568,8 +604,8 @@ async function refresh() {
       .catch(() => {});
   } catch (e) {
     $("rows").innerHTML = `<tr><td colspan="7"><div class="state-msg">
-      <b>Couldn't load stores</b> ${esc(e.message)}
-      <div style="margin-top:10px"><button class="btn" onclick="refresh()">Retry</button></div>
+      <span class="t">Couldn't load stores</span>${esc(e.message)}
+      <div style="margin-top:12px"><button class="btn ghost" onclick="refresh()">Retry</button></div>
     </div></td></tr>`;
   }
 }
@@ -601,17 +637,17 @@ function clearAllFilters() {
 /* ---------- stats + selects ---------- */
 function renderStats(stats) {
   const fc = stats.field_completeness || {};
-  const pct = (k) => fc[k] ? `${fc[k].pct}%` : "—";
+  const pct = (k) => fc[k] ? `${fc[k].pct}%` : "n/a";
   const cards = [
     [stats.total.toLocaleString(), "verified stores"],
-    [stats.states.length, "states & UTs"],
+    [stats.states.length, "states and UTs"],
     [stats.categories.length, "categories"],
     [pct("contacts_email_or_phone"), "have contacts"],
     [pct("tagline"), "have tagline"],
     [pct("logo"), "have logo"],
   ];
   $("cards").innerHTML = cards.map(([b, s]) =>
-    `<div class="card"><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join("");
+    `<div class="card"><span class="num">${esc(b)}</span><span class="lbl">${esc(s)}</span></div>`).join("");
 }
 
 function fillSelect(sel, values, allLabel) {
@@ -624,7 +660,7 @@ function openDrawer(domain) {
   const r = state.lastRows.find((x) => x.domain_url === domain);
   if (!r) return;
   lastFocused = document.activeElement;
-  $("drawerIdx").textContent = `dataset row #${r.index}`;
+  $("drawerIdx").textContent = `Dataset row ${r.index}`;
   const domainClean = (r.domain_url || "").replace(/^https?:\/\//, "");
   $("drawerBody").innerHTML = `
     <div class="brand">
@@ -636,26 +672,26 @@ function openDrawer(domain) {
     </div>
     ${r.tagline ? `<div class="tagline-full">${esc(r.tagline)}</div>` : ""}
     <div class="dsec"><h3>Category</h3>
-      <span class="pill">${esc(r.category) || "—"}</span>
-      <span class="muted" style="font-size:12px"> group: ${esc(r.group)}</span></div>
+      <span class="pill">${esc(r.category) || "Unclassified"}</span>
+      <span class="muted" style="font-size:12px"> in ${esc(r.group)}</span></div>
     <div class="dsec"><h3>Location</h3>
-      <dl class="kv"><dt>State</dt><dd>${esc(r.state) || '<span class="muted">not published</span>'}</dd></dl></div>
+      <dl class="kv"><dt>State</dt><dd>${esc(r.state) || '<span class="muted">Not published</span>'}</dd></dl></div>
     <div class="dsec"><h3>Contacts</h3>
       <dl class="kv">
         <dt>Emails</dt><dd><div class="contact-chips">${(r.emails || []).length
           ? r.emails.map((e) => `<a class="chip-line" href="mailto:${esc(e)}">${esc(e)}</a>`).join("")
-          : '<span class="muted">not published</span>'}</div></dd>
+          : '<span class="muted">Not published</span>'}</div></dd>
         <dt>Phones</dt><dd><div class="contact-chips">${(r.phones || []).length
           ? r.phones.map((p) => `<a class="chip-line" href="tel:${esc(p.replace(/\s+/g, ""))}">${esc(fmtPhone(p))}</a>`).join("")
-          : '<span class="muted">not published</span>'}</div></dd>
+          : '<span class="muted">Not published</span>'}</div></dd>
       </dl></div>
     <div class="dsec"><h3>Socials</h3>
       <div class="social-links" style="max-width:none">${socialLinks(r)}</div></div>
     <div class="dsec"><h3>Verification</h3>
       <dl class="kv">
-        <dt>Shopify ID</dt><dd class="prov">${esc(r.myshopify_domain) || "—"}</dd>
+        <dt>Shopify ID</dt><dd class="prov">${esc(r.myshopify_domain) || "Not available"}</dd>
         <dt>Completeness</dt><dd>${r.completeness} of 7 fields</dd>
-        <dt>Found via</dt><dd class="prov">${esc(r.sources) || "—"}</dd>
+        <dt>Found via</dt><dd class="prov">${esc(r.sources) || "Not recorded"}</dd>
       </dl></div>`;
   $("backdrop").classList.add("open");
   $("drawer").classList.add("open");
@@ -680,34 +716,34 @@ async function runQuery() {
   const text = $("nlq").value.trim();
   if (!text) { clearAllFilters(); return; }
   skeletonRows();
-  $("resultCount").innerHTML = "Interpreting query…";
+  $("resultCount").innerHTML = "Interpreting query";
   $("interpBox").innerHTML = "";
   try {
     const d = await fetchJSON(`/api/query?text=${encodeURIComponent(text)}`);
     const chips = d.interpretation.map(([k, v]) => {
-      const label = k === "state" ? `state: ${v}`
-                  : k === "category" ? `category: ${v}`
-                  : k === "text" ? `“${v}”`
-                  : `has ${v}`;
-      return `<span class="chip"><b>${esc(label)}</b></span>`;
+      const label = k === "state" ? `State: ${v}`
+                  : k === "category" ? `Category: ${v}`
+                  : k === "text" ? `"${v}"`
+                  : `Has ${v}`;
+      return `<span class="chip">${esc(label)}</span>`;
     }).join("");
     $("interpBox").innerHTML = `<div class="interp">
-      <span class="lbl">Interpreted as:</span>${chips}
-      <span class="lbl" style="margin-left:auto">${d.total.toLocaleString()} matches · showing ${d.rows.length}</span>
-      <button class="clear" id="clearInterp">clear</button>
+      <span class="lbl">Interpreted as</span>${chips}
+      <span class="matches">${d.total.toLocaleString()} matches, showing ${d.rows.length}</span>
+      <button class="clear" id="clearInterp">Clear</button>
     </div>`;
     $("clearInterp").addEventListener("click", () => {
       $("nlq").value = ""; $("interpBox").innerHTML = "";
     });
     state.lastRows = d.rows;
     renderRows(d.rows);
-    $("resultCount").innerHTML = `<b>${d.total.toLocaleString()}</b> stores match this query`;
+    $("resultCount").innerHTML = `<span class="num">${d.total.toLocaleString()}</span> stores match this query`;
     $("viewInfo").textContent = "query view";
-    $("pinfo").textContent = `Query view · ${d.rows.length} shown`;
+    $("pinfo").textContent = `Query view, ${d.rows.length} shown`;
     $("prev").disabled = true; $("next").disabled = true;
   } catch (e) {
     $("rows").innerHTML = `<tr><td colspan="7"><div class="state-msg">
-      <b>Query failed</b> ${esc(e.message)}</div></td></tr>`;
+      <span class="t">Query failed</span>${esc(e.message)}</div></td></tr>`;
   }
 }
 
@@ -734,8 +770,8 @@ document.querySelectorAll(".toggle").forEach((t) =>
     state.has.has(h) ? state.has.delete(h) : state.has.add(h);
     state.page = 1; syncControls(); refresh();
   }));
-$("prev").addEventListener("click", () => { state.page--; refresh(); window.scrollTo({ top: 0 }); });
-$("next").addEventListener("click", () => { state.page++; refresh(); window.scrollTo({ top: 0 }); });
+$("prev").addEventListener("click", () => { state.page--; refresh(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+$("next").addEventListener("click", () => { state.page++; refresh(); window.scrollTo({ top: 0, behavior: "smooth" }); });
 $("askBtn").addEventListener("click", runQuery);
 $("nlq").addEventListener("keydown", (e) => { if (e.key === "Enter") runQuery(); });
 document.querySelectorAll("[data-example]").forEach((b) =>
@@ -746,7 +782,6 @@ document.querySelectorAll("[data-example]").forEach((b) =>
   skeletonRows();
   try {
     const stats = await fetchJSON("/api/stats");
-    state.stats = stats;
     state.states = stats.states; state.categories = stats.categories;
     renderStats(stats);
     fillSelect($("fState"), stats.states, "All states");
