@@ -80,6 +80,7 @@ header .tag { font-size: 12px; color: var(--ink-muted); }
 /* ---------- query bar ---------- */
 .querybar { margin: 26px 0 8px; }
 .querybar label { display: block; font-size: 13px; color: var(--ink-secondary); margin-bottom: 8px; }
+.qwrap { position: relative; }
 .query-row { display: flex; gap: 10px; }
 .query-row input {
   flex: 1; min-width: 0; background: var(--surface); color: var(--ink);
@@ -90,6 +91,37 @@ header .tag { font-size: 12px; color: var(--ink-muted); }
 .query-row input::placeholder { color: var(--ink-muted); }
 .query-row input:focus { outline: none; border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-tint); }
+.qdrop {
+  position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 30;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-l); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
+  overflow: hidden; animation: rise .18s var(--ease) both;
+}
+.qd-head {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  padding: 9px 14px; border-bottom: 1px solid var(--border);
+  font-size: 12.5px; color: var(--ink-secondary); background: var(--surface-muted);
+}
+.qd-head .chip { font-size: 11.5px; padding: 1px 8px; }
+.qd-head .n { margin-left: auto; color: var(--ink-muted); }
+.qd-item {
+  display: flex; gap: 11px; align-items: center; width: 100%; text-align: left;
+  padding: 9px 14px; border-bottom: 1px solid var(--border);
+  transition: background-color .12s var(--ease);
+}
+.qd-item:hover, .qd-item.kb-active { background: var(--accent-tint); }
+.qd-item .who { min-width: 0; }
+.qd-item .store-name { font-size: 13px; }
+.qd-item .meta { font-size: 11.5px; color: var(--ink-muted); }
+.qd-item .side { margin-left: auto; text-align: right; flex: none; }
+.qd-item .side .st { font-size: 12px; color: var(--ink-secondary); }
+.qd-item .side .ct { font-size: 11px; color: var(--ink-muted); font-family: var(--mono); }
+.qd-foot {
+  display: block; width: 100%; text-align: left; padding: 10px 14px;
+  font-size: 13px; color: var(--accent); background: var(--surface);
+  transition: background-color .12s var(--ease);
+}
+.qd-foot:hover { background: var(--surface-muted); }
 .hint { color: var(--ink-muted); font-size: 12px; margin: 8px 2px 0; }
 .hint button { color: var(--accent); font-size: 12px; padding: 0; }
 .hint button:hover { text-decoration: underline; }
@@ -180,6 +212,12 @@ header .tag { font-size: 12px; color: var(--ink-muted); }
 .count-line { color: var(--ink-muted); font-size: 13px; margin: 0 0 10px;
               display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 .count-line .num { color: var(--ink); font-variant-numeric: tabular-nums; }
+.tablebox.pulse { animation: pulse-ring 1.4s var(--ease) 1; }
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(0, 113, 227, 0.35); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 113, 227, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 113, 227, 0); }
+}
 
 /* ---------- table ---------- */
 .tablebox {
@@ -329,13 +367,18 @@ footer.foot code { font-family: var(--mono); font-size: 11.5px;
 
   <div class="querybar rise rise-1">
     <label for="nlq">Ask the dataset</label>
-    <div class="query-row">
-      <input id="nlq" type="text" autocomplete="off"
-             placeholder='Try “skincare brands in Gujarat with phone”'>
-      <button class="btn" id="askBtn">Search</button>
+    <div class="qwrap">
+      <div class="query-row">
+        <input id="nlq" type="text" autocomplete="off" role="combobox"
+               aria-expanded="false" aria-controls="qdrop"
+               placeholder='Try “skincare brands in Gujarat with phone”'>
+        <button class="btn" id="askBtn">Search</button>
+      </div>
+      <div class="qd" id="qdrop" hidden></div>
     </div>
     <div id="interpBox"></div>
-    <p class="hint">Queries are parsed into explicit filters, nothing is guessed.
+    <p class="hint">Queries are parsed into explicit filters, nothing is guessed. Matching
+      stores appear here as you type; press Enter for the full table view.
       Examples:
       <button data-example="saree stores in Rajasthan with email">sarees in Rajasthan with email</button> ·
       <button data-example="ayurveda with instagram">ayurveda with Instagram</button> ·
@@ -617,6 +660,7 @@ function setFilter(key, value) {
   if (key === "group") state.category = "";
   syncControls();
   refresh();
+  showResultsFeedback();
 }
 function syncControls() {
   $("fGroup").value = state.group;
@@ -711,10 +755,114 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && $("drawer").classList.contains("open")) closeDrawer();
 });
 
+/* ---------- results feedback: scroll to the table and pulse it ---------- */
+function showResultsFeedback() {
+  const box = document.querySelector(".tablebox");
+  if (!box) return;
+  box.scrollIntoView({ behavior: "smooth", block: "start" });
+  box.classList.remove("pulse");
+  void box.offsetWidth; // restart the animation
+  box.classList.add("pulse");
+  setTimeout(() => box.classList.remove("pulse"), 1500);
+}
+
+/* ---------- live query dropdown ---------- */
+const qdrop = $("qdrop");
+const nlq = $("nlq");
+let kbIndex = -1;
+let dropSeq = 0;
+
+function closeDropdown() {
+  qdrop.hidden = true;
+  nlq.setAttribute("aria-expanded", "false");
+  kbIndex = -1;
+}
+
+function dropdownItem(r) {
+  const name = r.store_name || r.domain_url.replace(/^https?:\/\//, "");
+  const contact = (r.emails && r.emails[0]) || (r.phones && fmtPhone(r.phones[0])) || "";
+  return `
+    <button class="qd-item" data-url="${esc(r.domain_url)}">
+      ${avatarHTML(r)}
+      <span class="who">
+        <span class="store-name">${esc(name)}</span><br>
+        <span class="meta">${esc((r.domain_url || "").replace(/^https?:\/\//, ""))} · ${esc(r.category || "Unclassified")}</span>
+      </span>
+      <span class="side">
+        <span class="st">${esc(r.state || "")}</span><br>
+        <span class="ct">${esc(contact)}</span>
+      </span>
+    </button>`;
+}
+
+async function liveLookup() {
+  const text = nlq.value.trim();
+  const seq = ++dropSeq;
+  if (text.length < 2) { closeDropdown(); return; }
+  try {
+    const d = await fetchJSON(`/api/query?text=${encodeURIComponent(text)}`);
+    if (seq !== dropSeq) return; // a newer keystroke arrived
+    if (!d.rows.length) {
+      qdrop.innerHTML = `<div class="qd-head">No stores match. Try a category
+        (sarees, skincare, jewellery), a state, or “with email”.</div>`;
+      qdrop.hidden = false;
+      nlq.setAttribute("aria-expanded", "true");
+      return;
+    }
+    const chips = d.interpretation.map(([k, v]) => {
+      const label = k === "state" ? `State: ${v}`
+                  : k === "category" ? `Category: ${v}`
+                  : k === "text" ? `"${v}"`
+                  : `Has ${v}`;
+      return `<span class="chip">${esc(label)}</span>`;
+    }).join("");
+    qdrop.innerHTML = `
+      <div class="qd-head"><span>Interpreted as</span>${chips}
+        <span class="n">${d.total.toLocaleString()} matches</span></div>
+      ${d.rows.slice(0, 6).map(dropdownItem).join("")}
+      <button class="qd-foot">View all ${d.total.toLocaleString()} matches in the table below</button>`;
+    qdrop.hidden = false;
+    nlq.setAttribute("aria-expanded", "true");
+    kbIndex = -1;
+    qdrop.querySelectorAll(".qd-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        closeDropdown();
+        openDrawer(item.dataset.url);
+      });
+    });
+    qdrop.querySelector(".qd-foot").addEventListener("click", () => {
+      closeDropdown();
+      runQuery();
+    });
+  } catch (e) { /* live lookup is best-effort; Enter still works */ }
+}
+
+function dropdownKeydown(e) {
+  if (qdrop.hidden) return false;
+  const items = [...qdrop.querySelectorAll(".qd-item")];
+  if (!items.length) return false;
+  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+    e.preventDefault();
+    kbIndex = e.key === "ArrowDown"
+      ? Math.min(items.length - 1, kbIndex + 1)
+      : Math.max(0, kbIndex === -1 ? items.length - 1 : kbIndex - 1);
+    items.forEach((it, i) => it.classList.toggle("kb-active", i === kbIndex));
+    items[kbIndex].scrollIntoView({ block: "nearest" });
+    return true;
+  }
+  if (e.key === "Enter" && kbIndex >= 0) {
+    e.preventDefault();
+    items[kbIndex].click();
+    return true;
+  }
+  return false;
+}
+
 /* ---------- natural language query ---------- */
 async function runQuery() {
-  const text = $("nlq").value.trim();
+  const text = nlq.value.trim();
   if (!text) { clearAllFilters(); return; }
+  closeDropdown();
   skeletonRows();
   $("resultCount").innerHTML = "Interpreting query";
   $("interpBox").innerHTML = "";
@@ -741,6 +889,7 @@ async function runQuery() {
     $("viewInfo").textContent = "query view";
     $("pinfo").textContent = `Query view, ${d.rows.length} shown`;
     $("prev").disabled = true; $("next").disabled = true;
+    showResultsFeedback();
   } catch (e) {
     $("rows").innerHTML = `<tr><td colspan="7"><div class="state-msg">
       <span class="t">Query failed</span>${esc(e.message)}</div></td></tr>`;
@@ -773,7 +922,20 @@ document.querySelectorAll(".toggle").forEach((t) =>
 $("prev").addEventListener("click", () => { state.page--; refresh(); window.scrollTo({ top: 0, behavior: "smooth" }); });
 $("next").addEventListener("click", () => { state.page++; refresh(); window.scrollTo({ top: 0, behavior: "smooth" }); });
 $("askBtn").addEventListener("click", runQuery);
-$("nlq").addEventListener("keydown", (e) => { if (e.key === "Enter") runQuery(); });
+let typeDebounce;
+nlq.addEventListener("input", () => {
+  clearTimeout(typeDebounce);
+  typeDebounce = setTimeout(liveLookup, 220);
+});
+nlq.addEventListener("keydown", (e) => {
+  if (dropdownKeydown(e)) return;
+  if (e.key === "Enter") { closeDropdown(); runQuery(); }
+  if (e.key === "Escape") closeDropdown();
+});
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".qwrap")) closeDropdown();
+});
+$("askBtn").addEventListener("click", closeDropdown);
 document.querySelectorAll("[data-example]").forEach((b) =>
   b.addEventListener("click", () => { $("nlq").value = b.dataset.example; runQuery(); }));
 
