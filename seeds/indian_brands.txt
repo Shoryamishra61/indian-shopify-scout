@@ -1,0 +1,146 @@
+# Curated seed list - well-known Indian consumer brands (leads, not facts).
+# The pipeline verifies every one of them; being wrong costs nothing.
+# One domain per line. Mixed TLDs on purpose: Indian brands commonly use
+# .com, .in and .co.in, and the TLD alone proves nothing.
+
+# consumer electronics
+boat-lifestyle.com
+gonoise.com
+fireboltt.com
+
+# beauty & personal care
+mcaffeine.com
+sugarcosmetics.com
+plumgoodness.com
+wowskinscience.com
+thedermaco.com
+foxtale.in
+deconstruct.in
+theloveco.in
+aqualogica.in
+sadhev.com
+kamaayurveda.com
+justherbs.in
+bluenectar.co.in
+nathabit.in
+vedix.com
+skinkraft.com
+cureveda.com
+drvaidyas.com
+kapiva.in
+sanfe.in
+sironaindia.com
+
+# grooming
+beardo.in
+themancompany.com
+bombayshavingcompany.com
+manmatters.com
+urbangabru.com
+
+# jewellery
+giva.co
+rubans.in
+tarinika.in
+amamajewellery.com
+
+# food & beverage
+vahdamteas.com
+bluetokaicoffee.com
+yogabar.in
+thewholetruthfoods.com
+twobrothersindiashop.com
+earlyfoods.com
+ragecoffee.com
+teatrunk.com
+consciousfood.com
+happilo.com
+
+# home & living
+wakefit.co
+thesleepcompany.in
+chumbak.com
+exclusivelane.com
+ellementry.com
+nestasia.com
+jaypore.com
+
+# bags & accessories
+dailyobjects.com
+zouk.co.in
+mokobara.com
+
+# kids
+rforrabbit.com
+miarcus.com
+
+# pets
+headsupfortails.com
+captainzack.co.in
+goofytails.com
+
+# footwear
+paaduks.com
+tresmode.com
+needledust.com
+
+# fashion & ethnic wear
+suta.in
+karagiri.com
+weaverstory.com
+libas.in
+globaldesi.in
+bonkerscorner.com
+thesouledstore.com
+snitch.com
+thebearhouse.com
+powerlook.in
+wrogn.com
+veirdo.com
+berrylush.com
+astopaani.com
+tistabene.com
+wforwoman.com
+kica.in
+bombayshirtcompany.com
+fabindia.com
+
+# from public D2C roundups (web search, 2026-09)
+mamaearth.in
+faebeauty.com
+bewakoof.com
+paperboatdrinks.com
+sleepyowl.co
+slurrpfarm.com
+epigamia.com
+theyogabar.com
+beyoung.in
+bummer.in
+femmella.com
+headphonezone.in
+nonasties.in
+bebemoss.com
+
+# second curated batch
+arata.in
+fixmycurls.com
+bareanatomy.in
+deyga.in
+anveya.com
+rasluxurious.com
+thebutternutco.com
+diabexy.com
+ketofy.com
+amalaearth.com
+organicharvest.in
+fablestreet.com
+thesummerhouse.in
+okhai.org
+theloom.in
+tjori.com
+shumee.in
+wiggles.in
+vajor.com
+seamsfriendly.com
+pantproject.com
+clinikally.com
