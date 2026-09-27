@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Indian Shopify Stores — Discovery Dataset</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --border: #2d333b;
+    --text: #e6edf3; --muted: #8b949e; --accent: #6ee7a0; --accent2: #79b8ff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.5 -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 20px 80px; }
+  header h1 { font-size: 22px; margin: 0 0 4px; }
+  header p { color: var(--muted); margin: 0 0 20px; font-size: 14px; }
+  header a { color: var(--accent2); text-decoration: none; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+           gap: 12px; margin-bottom: 20px; }
+  .card { background: var(--panel); border: 1px solid var(--border);
+          border-radius: 10px; padding: 14px 16px; }
+  .card b { display: block; font-size: 22px; color: var(--accent); }
+  .card span { color: var(--muted); font-size: 12.5px; }
+  .bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  input, select { background: var(--panel); color: var(--text);
+                  border: 1px solid var(--border); border-radius: 8px;
+                  padding: 9px 12px; font-size: 14px; outline: none; }
+  input:focus, select:focus { border-color: var(--accent2); }
+  input[type=search] { flex: 1 1 260px; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel);
+          border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
+       color: var(--muted); padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border);
+       vertical-align: top; font-size: 13.5px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #1b2129; }
+  .store { display: flex; gap: 10px; align-items: flex-start; }
+  .logo { width: 34px; height: 34px; border-radius: 7px; object-fit: contain;
+          background: #fff; flex: none; }
+  .logo:is([src=""], [src$=","]) { visibility: hidden; }
+  .domain { color: var(--accent2); text-decoration: none; font-weight: 600; }
+  .name { color: var(--muted); font-size: 12.5px; }
+  .tag { color: var(--muted); font-size: 12.5px; margin-top: 3px;
+         max-width: 420px; display: -webkit-box; -webkit-line-clamp: 2;
+         -webkit-box-orient: vertical; overflow: hidden; }
+  .pill { display: inline-block; background: #21262d; border: 1px solid var(--border);
+          border-radius: 20px; padding: 1px 9px; font-size: 12px; color: var(--text); }
+  .contacts { font-size: 12.5px; word-break: break-all; max-width: 220px; }
+  .socials a { color: var(--muted); margin-right: 6px; text-decoration: none;
+               font-size: 12.5px; }
+  .socials a:hover { color: var(--accent2); }
+  .pager { display: flex; gap: 8px; align-items: center; justify-content: center;
+           margin-top: 16px; color: var(--muted); }
+  button { background: var(--panel); color: var(--text); border: 1px solid var(--border);
+           border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 13.5px; }
+  button:disabled { opacity: .4; cursor: default; }
+  button:not(:disabled):hover { border-color: var(--accent2); }
+  .empty { text-align: center; color: var(--muted); padding: 48px 0; }
+  .foot { margin-top: 28px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Indian Shopify Store Discovery</h1>
+    <p>2,440 verified Shopify stores operated from India — discovered via the
+       Common Crawl index, confirmed through Shopify's public <code>/meta.json</code>.
+       Pipeline and methodology:
+       <a href="https://github.com/Shoryamishra61/indian-shopify-scout">github.com/Shoryamishra61/indian-shopify-scout</a></p>
+  </header>
+
+  <div class="cards" id="cards"></div>
+
+  <div class="bar">
+    <input type="search" id="q" placeholder="Search domain, name, tagline, email…">
+    <select id="state"><option value="">All states</option></select>
+    <select id="category"><option value="">All categories</option></select>
+    <select id="has">
+      <option value="">Any fields</option>
+      <option value="email">Has email</option>
+      <option value="phone">Has phone</option>
+      <option value="social">Has Instagram</option>
+      <option value="logo">Has logo</option>
+    </select>
+  </div>
+
+  <table>
+    <thead><tr>
+      <th style="width:36%">Store</th><th>Category</th><th>State</th>
+      <th>Contacts</th><th>Socials</th>
+    </tr></thead>
+    <tbody id="rows"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+  </table>
+  <div class="pager">
+    <button id="prev">← Prev</button>
+    <span id="pinfo"></span>
+    <button id="next">Next →</button>
+  </div>
+
+  <p class="foot">Every row was verified against the merchant's own Shopify admin
+  data (country IN) and a random post-export sample re-confirmed live 15/15.
+  Data collected in compliance with robots.txt at ≤1 request/second per host.</p>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let state = { q: "", state: "", category: "", has: "", page: 1 };
+
+async function api(path, params) {
+  const u = new URL(path, location.origin);
+  for (const [k, v] of Object.entries(params)) if (v) u.searchParams.set(k, v);
+  const r = await fetch(u);
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+function esc(s) { const d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+
+function drawCards(stats) {
+  const fc = stats.field_completeness || {};
+  const pct = (k) => fc[k] ? fc[k].pct + "%" : "—";
+  const cards = [
+    [stats.total.toLocaleString(), "verified stores"],
+    [stats.states.length, "states & UTs"],
+    [stats.categories.length, "categories"],
+    [pct("contacts_email_or_phone"), "with contacts"],
+    [pct("state"), "with state"],
+    [pct("logo"), "with logo"],
+  ];
+  $("cards").innerHTML = cards.map(([b, s]) =>
+    `<div class="card"><b>${esc(String(b))}</b><span>${esc(s)}</span></div>`).join("");
+  for (const [sel, list] of [[$("state"), stats.states], [$("category"), stats.categories]]) {
+    for (const v of list) {
+      const o = document.createElement("option");
+      o.value = v; o.textContent = v; sel.appendChild(o);
+    }
+  }
+}
+
+function socialIcons(r) {
+  const links = [];
+  for (const [k, label] of [["instagram","IG"],["facebook","FB"],["twitter","X"],
+                            ["linkedin","in"],["youtube","YT"]]) {
+    if (r[k]) links.push(`<a href="${esc(r[k])}" target="_blank" rel="noopener">${label}</a>`);
+  }
+  return links.join(" ") || '<span style="color:#4b5563">—</span>';
+}
+
+function drawRows(data) {
+  if (!data.rows.length) {
+    $("rows").innerHTML = '<tr><td colspan="5" class="empty">No stores match those filters.</td></tr>';
+    $("pinfo").textContent = ""; return;
+  }
+  $("rows").innerHTML = data.rows.map((r) => {
+    const domain = (r.domain_url || "").replace(/^https?:\/\//, "");
+    return `<tr>
+      <td><div class="store">
+        <img class="logo" loading="lazy" src="${esc(r.logo_url)}" alt=""
+             onerror="this.style.visibility='hidden'">
+        <div>
+          <a class="domain" href="${esc(r.domain_url)}" target="_blank" rel="noopener">${esc(domain)}</a>
+          <div class="name">${esc(r.store_name)}</div>
+          <div class="tag">${esc(r.tagline)}</div>
+        </div>
+      </div></td>
+      <td><span class="pill">${esc(r.category) || "—"}</span></td>
+      <td>${esc(r.state) || "—"}</td>
+      <td class="contacts">${esc(r.emails)}${r.emails && r.phones ? "<br>" : ""}${esc(r.phones)}</td>
+      <td class="socials">${socialIcons(r)}</td>
+    </tr>`;
+  }).join("");
+  $("pinfo").textContent = `Page ${data.page} of ${data.pages} · ${data.total.toLocaleString()} stores`;
+  $("prev").disabled = data.page <= 1;
+  $("next").disabled = data.page >= data.pages;
+}
+
+async function refresh() {
+  try {
+    const data = await api("/api/stores", { ...state, per_page: 50 });
+    drawRows(data);
+  } catch (e) {
+    $("rows").innerHTML = `<tr><td colspan="5" class="empty">API error: ${esc(e.message)}</td></tr>`;
+  }
+}
+
+let debounce;
+$("q").addEventListener("input", (e) => {
+  clearTimeout(debounce);
+  debounce = setTimeout(() => { state.q = e.target.value; state.page = 1; refresh(); }, 300);
+});
+for (const [id, key] of [["state","state"], ["category","category"], ["has","has"]]) {
+  $(id).addEventListener("change", (e) => { state[key] = e.target.value; state.page = 1; refresh(); });
+}
+$("prev").addEventListener("click", () => { state.page--; refresh(); window.scrollTo(0, 0); });
+$("next").addEventListener("click", () => { state.page++; refresh(); window.scrollTo(0, 0); });
+
+(async () => {
+  try {
+    const stats = await api("/api/stats", {});
+    drawCards(stats);
+  } catch (e) { /* cards are non-critical */ }
+  refresh();
+})();
+</script>
+</body>
+</html>
